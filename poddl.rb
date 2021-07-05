@@ -4,9 +4,10 @@ require "open-uri"
 require "digest"
 
 class Poddl
-  @@NOT_AVAILABLE_HASH = "ae6398b5a27bc8c0a771df6c907ade794be15518174773c58c7c7ddd17098906" # sha256 of file that does not exists
+  @@NOT_AVAILABLE_HASH = "ae6398b5a27bc8c0a771df6c907ade794be15518174773c58c7c7ddd17098906" # sha256 of not available audio clip
   @@TARGET_URL = "https://assets.languagepod101.com/dictionary/japanese/audiomp3.php"
 
+  # Not used, but might be usefull in the future
   attr_reader :kana
   attr_reader :kanji
   
@@ -24,7 +25,7 @@ class Poddl
   def download( path )
     # Downloads audio file to specified path
     if not File.directory?(path)
-      puts "@{path} is not a valid directory"
+      puts "#{path} is not a valid directory"
       return 1
     end
     begin
@@ -69,18 +70,13 @@ end
 
 if $0 == __FILE__
   SAVE_PATH = "#{Dir.home}/Documents/Personal/Langauge/Japanese/Audio" # Location to save file
-  status = 0
+
   if not ARGV.empty?
     poddl = Poddl.new(ARGV[0], ARGV[1])
     status = poddl.download(SAVE_PATH)
+    status ? exit(1) : exit(0) # Return based on status
   else
     print "Usage:\npoddl kana [kanji]\n"
-    status = 1
-  end
-
-  if status == 0
-    exit 0
-  else
     exit 1
   end
 end
