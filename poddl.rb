@@ -12,13 +12,23 @@ class Poddl
   attr_reader :kanji
   
   def initialize( kana, kanji=nil )
-    kana.match?(/(\p{hiragana}|\p{katakana}).*/) ? (@kana = kana)   : (puts "#{kana} not valid kana"; exit 1) # If kana save to @kana else exit
-    kanji.nil? || kanji.match?(/\p{han}.*/)      ? (@kanji = kanji) : (puts "#{kanji} not valid kanji"; exit 1) # If kanji save to @kanji else exit
-    
+    if kana.match?(/(\p{hiragana}|\p{katakana}).*/) # Is kana?
+      @kana = kana
+    else
+      puts "\"#{kana}\" is not valid kana"
+      exit 1 #Can't return here?
+    end
+
+    if kanji.nil? || kanji.match?(/\p{han}.*/) # Is nil or kanji?
+      @kanji = kanji
+    else
+      puts "\"#{kanji}\" is not valid kanji"
+      exit 1 #Can't return here?
+    end
   end
 
   def remap( kana, kanji=nil )
-    # Easier than changing it through attr_writer
+    # Easier than updating through two attr_writer's
     self.initialize( kana, kanji )
     return 1
   end
