@@ -12,14 +12,14 @@ class Poddl
   attr_reader :kanji
   
   def initialize( kana, kanji=nil )
-    if kana.match?(/(\p{hiragana}|\p{katakana}).*/) # Is kana?
+    if kana.match?(/^(\p{hiragana}|\p{katakana})+$/) # Is kana?
       @kana = kana
     else
       puts "\"#{kana}\" is not valid kana"
       exit 1 #Can't return here?
     end
 
-    if kanji.nil? || kanji.match?(/\p{han}.*/) # Is nil or kanji?
+    if kanji.nil? || kanji.match?(/^\p{han}+$/) # Is nil or kanji?
       @kanji = kanji
     else
       puts "\"#{kanji}\" is not valid kanji"
