@@ -12,8 +12,9 @@ class Poddl
   attr_reader :kanji
   
   def initialize( kana, kanji=nil )
-    @kana = kana
-    @kanji = kanji
+    kana.match?(/(\p{hiragana}|\p{katakana}).*/) ? (@kana = kana)   : (puts "#{kana} not valid kana"; exit 1) # If kana save to @kana else exit
+    kanji.nil? || kanji.match?(/\p{han}.*/)      ? (@kanji = kanji) : (puts "#{kanji} not valid kanji"; exit 1) # If kanji save to @kanji else exit
+    
   end
 
   def remap( kana, kanji=nil )
@@ -32,13 +33,16 @@ class Poddl
       URI.open(@@TARGET_URL +  encode_uri) do |url|
         if Digest::SHA256.hexdigest(url.read) != @@NOT_AVAILABLE_HASH # Check if url return a not available audio clip
           url.rewind # Rewind after SHA256
-          puts "Downloading: #{pretty_name(:file)}.mp3"
-          File.open( "#{path}/#{pretty_name(:file)}.mp3", "w") do |f|
+          puts "Downloading: #{pretty_name(true)}.mp3"
+          File.open( "#{path}/#{pretty_name(true)}.mp3", "w") do |f|
             f.write(url.read) # Files are small enough to be saved in one part
           end
           return 0 # Success
         else
           puts "#{pretty_name} not valid"
+          if kanji.nil?
+            puts "Kanji might be required even if it's not in common use"
+          end
           return 1 # Failure
         end
       end
@@ -58,9 +62,9 @@ class Poddl
       end
   end
 
-  def pretty_name( file=nil )
+  def pretty_name( file=false )
     # Formats @kana,@kanji into a pretty format
-    if file == :file
+    if file == true
       return @kanji.nil? ? "#{@kana}" : "#{@kanji}_#{@kana}" # format for filename
     else
       return @kanji.nil? ? "#{@kana}" : "#{@kanji} 「#{@kana}」" # format for printing
