@@ -17,8 +17,12 @@ class Poddl
 
     # Check if @kana/@kanji is defined
     raise NameError unless defined?(@kana) && defined?(@kanji)
+
   rescue NameError
     warn "Input not a valid string"
+    # HACK: Remove initialize entierly to avoid exiting here?
+    #   Instead @kana and @kanji initialized through attr_writer method
+    #   Though it needs to be checked for initialization elsewhere
     exit 1
   end
 
@@ -29,6 +33,8 @@ class Poddl
       return 1
     end
 
+    # HACK: Too indented, too many lines
+    #   The File.open should at least be placed in a new method
     URI.parse(TARGET_URL + encode_uri).open do |url|
       # Check if url return a not available audio clip
       if Digest::SHA256.hexdigest(url.read) == NOT_AVAILABLE_HASH
@@ -46,6 +52,7 @@ class Poddl
       end
       return 0
     end
+
   rescue SocketError, RuntimeError # Connection? Wrong URL?
     warn "Network Error"
     exit 1
@@ -53,16 +60,19 @@ class Poddl
 
   # Attribute write methods
 
+  # Assign value if input is only kana
   def kana=(kana)
     @kana = kana if valid_string?(kana, /^(?:\p{hiragana}|\p{katakana}|ー)+$/)
   end
 
+  # Assing value if input is nil or only kanji
   def kanji=(kanji = nil)
     @kanji = kanji if kanji.nil? || valid_string?(kanji, /^\p{han}+$/)
   end
 
   private
 
+  # Check if string is valid based on Regex
   def valid_string?(str, regex)
     str.match?(regex)
   end
