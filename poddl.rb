@@ -9,22 +9,17 @@ class Poddl
   NOT_AVAILABLE_HASH = "ae6398b5a27bc8c0a771df6c907ade794be15518174773c58c7c7ddd17098906" # SHA-256
   TARGET_URL = "https://assets.languagepod101.com/dictionary/japanese/audiomp3.php"
 
-  attr_accessor :kana, :kanji
+  attr_reader :kana, :kanji
 
   def initialize(kana, kanji = nil)
-    if kana.match?(/^(?:\p{hiragana}|\p{katakana}|ー)+$/) # kana?
-      @kana = kana
-    else
-      warn "\"#{kana}\" is not valid kana"
-      exit 1 # Can't return here?
-    end
+    @kana = kana if valid_string?(kana, /^(?:\p{hiragana}|\p{katakana}|ー)+$/) # kana?
+    @kanji = kanji if kanji.nil? || valid_string?(kanji, /^\p{han}+$/) # nil or kanji?
 
-    if kanji.nil? || kanji.match?(/^\p{han}+$/) # nil or kanji?
-      @kanji = kanji
-    else
-      warn "\"#{kanji}\" is not valid kanji"
-      exit 1 # Can't return here?
-    end
+    # Check if @kana/@kanji is defined
+    raise NameError unless defined?(@kana) && defined?(@kanji)
+  rescue NameError
+    warn "Input not a valid string"
+    exit 1
   end
 
   # Downloads audio file to the specified path
@@ -36,27 +31,41 @@ class Poddl
 
     URI.parse(TARGET_URL + encode_uri).open do |url|
       # Check if url return a not available audio clip
-      if Digest::SHA256.hexdigest(url.read) != NOT_AVAILABLE_HASH
-        url.rewind
-
-        puts "Downloading: #{pretty_name(file: true)}.mp3"
-        File.open("#{path}/#{pretty_name(file: true)}.mp3", "w") do |f|
-          # Files are small enough to be saved in one part
-          f.write(url.read)
-        end
-        return 0
-      else
+      if Digest::SHA256.hexdigest(url.read) == NOT_AVAILABLE_HASH
         warn "#{pretty_name} not valid"
         warn "Kanji might be required even if it's not in common use" if @kanji.nil?
         return 1
       end
+
+      url.rewind
+
+      puts "Downloading: #{pretty_name(file: true)}.mp3"
+      File.open("#{path}/#{pretty_name(file: true)}.mp3", "w") do |f|
+        # Files are small enough to be saved in one part
+        f.write(url.read)
+      end
+      return 0
     end
   rescue SocketError, RuntimeError # Connection? Wrong URL?
     warn "Network Error"
     exit 1
   end
 
+  # Attribute write methods
+
+  def kana=(kana)
+    @kana = kana if valid_string?(kana, /^(?:\p{hiragana}|\p{katakana}|ー)+$/)
+  end
+
+  def kanji=(kanji = nil)
+    @kanji = kanji if kanji.nil? || valid_string?(kanji, /^\p{han}+$/)
+  end
+
   private
+
+  def valid_string?(str, regex)
+    str.match?(regex)
+  end
 
   # Return a formated uri query
   def encode_uri
