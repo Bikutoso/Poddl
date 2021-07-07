@@ -11,51 +11,19 @@ class Poddl
 
   attr_reader :kana, :kanji
 
-  def initialize(kana, kanji = nil)
-    @kana = kana if valid_string?(kana, /^(?:\p{hiragana}|\p{katakana}|ー)+$/) # kana?
-    @kanji = kanji if kanji.nil? || valid_string?(kanji, /^\p{han}+$/) # nil or kanji?
-
-    # Check if @kana/@kanji is defined
-    raise NameError unless defined?(@kana) && defined?(@kanji)
-
-  rescue NameError
-    warn "Input not a valid string"
-    # HACK: Remove initialize entierly to avoid exiting here?
-    #   Instead @kana and @kanji initialized through attr_writer method
-    #   Though it needs to be checked for initialization elsewhere
-    exit 1
-  end
-
-  # Downloads audio file to the specified path
+  # Prepeare and find issues before actuall downloading
   def download(path)
     unless File.directory?(path)
       warn "#{path} is not a valid directory"
       return 1
     end
 
-    # HACK: Too indented, too many lines
-    #   The File.open should at least be placed in a new method
-    URI.parse(TARGET_URL + encode_uri).open do |url|
-      # Check if url return a not available audio clip
-      if Digest::SHA256.hexdigest(url.read) == NOT_AVAILABLE_HASH
-        warn "#{pretty_name} not valid"
-        warn "Kanji might be required even if it's not in common use" if @kanji.nil?
-        return 1
-      end
-
-      url.rewind
-
-      puts "Downloading: #{pretty_name(file: true)}.mp3"
-      File.open("#{path}/#{pretty_name(file: true)}.mp3", "w") do |f|
-        # Files are small enough to be saved in one part
-        f.write(url.read)
-      end
-      return 0
+    unless defined?(@kana) && defined?(@kanji)
+      warn "Input not a valid string"
+      return 1
     end
 
-  rescue SocketError, RuntimeError # Connection? Wrong URL?
-    warn "Network Error"
-    exit 1
+    url_open(path)
   end
 
   # Attribute write methods
@@ -71,6 +39,38 @@ class Poddl
   end
 
   private
+
+  # Open url and check file hash of url
+  def url_open(path)
+    URI.parse(TARGET_URL + encode_uri).open do |url|
+      # Check if url return a not available audio clip
+      if Digest::SHA256.hexdigest(url.read) == NOT_AVAILABLE_HASH
+        warn "#{pretty_name} not valid"
+        warn "Kanji might be required even if it's not in common use" if @kanji.nil?
+        return 1
+      end
+
+      url.rewind
+      url_save(url, path)
+    end
+
+  rescue SocketError, RuntimeError # Connection? Wrong URL?
+    warn "Failed to open #{TARGET_URL}!"
+    exit 1
+  end
+
+  # Open file and save output of the url
+  def url_save(url, path)
+    puts "Downloading: #{pretty_name(file: true)}.mp3"
+    File.open("#{path}/#{pretty_name(file: true)}.mp3", "w") do |f|
+      # Files are small enough to be saved in one part
+      f.write(url.read) ? 0 : 1
+    end
+
+  rescue Errno::ENOENT
+    warn "Failed to write to #{path}/#{pretty_name(file: true)}.mp3!"
+    exit 1
+  end
 
   # Check if string is valid based on Regex
   def valid_string?(str, regex)
@@ -106,7 +106,9 @@ if $PROGRAM_NAME == __FILE__
     print "Usage:\npoddl kana [kanji]\n"
     exit 1
   else
-    poddl = Poddl.new(ARGV[0], ARGV[1])
+    poddl = Poddl.new
+    poddl.kana = ARGV[0]
+    poddl.kanji = ARGV[1]
     exit poddl.download(SAVE_PATH)
   end
 end
