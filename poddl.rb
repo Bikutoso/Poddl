@@ -23,6 +23,20 @@ class Poddl
 
   attr_reader :kana, :kanji
 
+  # Value assign methods
+
+  # Assign value if input is only kana
+  def kana=(kana)
+    @kana = kana if valid_string?(kana, /^(?:\p{hiragana}|\p{katakana}|ー)+$/)
+  end
+
+  # Assign value if input is nil or only kanji
+  def kanji=(kanji = nil)
+    @kanji = kanji if kanji.nil? || valid_string?(kanji, /^\p{han}+$/)
+  end
+
+  # Public Methods
+
   # Prepeare and find issues before actuall downloading
   def download(path)
     unless File.directory?(path)
@@ -37,30 +51,13 @@ class Poddl
 
     url_open(path)
   end
-
-  # Attribute write methods
-
-  # Assign value if input is only kana
-  def kana=(kana)
-    @kana = kana if valid_string?(kana, /^(?:\p{hiragana}|\p{katakana}|ー)+$/)
-  end
-
-  # Assign value if input is nil or only kanji
-  def kanji=(kanji = nil)
-    @kanji = kanji if kanji.nil? || valid_string?(kanji, /^\p{han}+$/)
-  end
-
+  
   private
 
   # Open url and check file hash of url
   def url_open(path)
     URI.parse(TARGET_URL + encode_uri).open do |url|
-      # Check if url return a not available audio clip
-      if Digest::SHA256.hexdigest(url.read) == NOT_AVAILABLE_HASH
-        warn "#{pretty_name} not valid"
-        warn "Kanji might be required even if it's not in common use" if @kanji.nil?
-        return 1
-      end
+      return 1 unless exist_file?(url)
 
       url.rewind
       url_save(url, path)
@@ -79,9 +76,17 @@ class Poddl
       f.write(url.read) ? 0 : 1
     end
 
-  rescue Errno::ENOENT
+  rescue Errno::ENOENT, Errno::EACCES, Errno::EISDIR, Errno::ENOSPC
     warn "Failed to write to #{path}/#{pretty_name(file: true)}.mp3!"
     exit 1
+  end
+
+  def exist_file?(url)
+    # Check if url return a not available audio clip
+    return true unless Digest::SHA256.hexdigest(url.read) == NOT_AVAILABLE_HASH
+
+    warn "Unable to find file: #{pretty_name(file: true)}"
+    warn "Kanji might be required even if it's not in common use" if @kanji.nil?
   end
 
   # Check if string is valid based on Regex
