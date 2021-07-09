@@ -31,7 +31,7 @@ class Poddl
   end
 
   # Assign value if input is nil or only kanji
-  def kanji=(kanji = nil)
+  def kanji=(kanji)
     @kanji = kanji if kanji.nil? || valid_string?(kanji, /^\p{han}+$/)
   end
 
@@ -51,11 +51,16 @@ class Poddl
 
     url_open(path)
   end
-  
+
   private
 
   # Open url and check file hash of url
   def url_open(path)
+    # OPTIMIZE: Store the file in a variable.
+    #   It should possibly save a second download? (don't know how rewinds works)
+    #   It will also remove the need for the url.rewind.
+    #   And make it simpler to check with "exist_file?"
+
     URI.parse(TARGET_URL + encode_uri).open do |url|
       return 1 unless exist_file?(url)
 
@@ -114,17 +119,43 @@ class Poddl
   end
 end
 
-if $PROGRAM_NAME == __FILE__
-
+# Handle how input is done arguments or interactive
+#   also deal with other arguments
+# HACK: Would this class fit better as a singelton class?
+class InputHandler
   # NOTE: Change path to fit your system
   SAVE_PATH = "#{Dir.home}/Documents/Personal/Langauge/Japanese/Audio"
 
-  if ARGV.empty?
+  def initialize
+    @poddl = Poddl.new
+  end
+
+  # Display help message for script
+  def help
     print "Usage:\npoddl kana [kanji]\n"
     exit 1
+  end
+
+  # Argument input.
+  def arg_input(args)
+    new_input(*args)
+    exit @poddl.download(SAVE_PATH)
+  end
+
+  private
+
+  # Assign a new input to poddl and verify.
+  def new_input(kana, kanji)
+    @poddl.kana = kana
+    @poddl.kanji = kanji
+  end
+end
+
+if $PROGRAM_NAME == __FILE__
+  handler = InputHandler.new
+  if ARGV.empty?
+    handler.help
   else
-    poddl = Poddl.new
-    poddl.kana, poddl.kanji = ARGV
-    exit poddl.download(SAVE_PATH)
+    handler.arg_input(ARGV)
   end
 end
