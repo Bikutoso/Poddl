@@ -23,12 +23,12 @@ module PODDL
 
     # Assign value if input is only kana
     def kana=(kana)
-      @kana = kana if valid_string?(kana, /^(?:\p{hiragana}|\p{katakana}|ー)+$/)
+      @kana = kana if valid?(kana, /^(?:\p{hiragana}|\p{katakana}|ー)+$/)
     end
 
     # Assign value if input is nil or only kanji
     def kanji=(kanji)
-      @kanji = kanji if kanji.nil? || valid_string?(kanji, /^\p{han}+$/)
+      @kanji = kanji if kanji.nil? || valid?(kanji, /^\p{han}+$/)
     end
 
     def initialize(kana, kanji = nil)
@@ -38,9 +38,8 @@ module PODDL
 
     # Returns true if kana & kanji is defined
     def defined?
-      return true if defined?(@kana) && defined?(@kanji)
-
-      warn "Not a valid word"
+      # Double negate to return boolean
+      !!(defined?(@kana) && defined?(@kanji))
     end
 
     # Return a formated uri query
@@ -61,7 +60,7 @@ module PODDL
     private
 
     # Check if string is valid based on Regex
-    def valid_string?(str, regex)
+    def valid?(str, regex)
       str.match?(regex)
     end
   end
@@ -77,8 +76,6 @@ module PODDL
       @word = word
     end
 
-    # Public Methods
-
     # Prepeare and find issues before actuall downloading
     def download(path)
       unless File.directory?(path)
@@ -86,7 +83,10 @@ module PODDL
         return 1
       end
 
-      return 1 unless @word.defined?
+      unless @word.defined?
+        warn "Not a valid word"
+        return 1
+      end
 
       url_open(path)
     end
@@ -98,10 +98,13 @@ module PODDL
       # OPTIMIZE: Store the file in a variable.
       #   It should possibly save a second download? (don't know how rewinds works)
       #   It will also remove the need for the url.rewind.
-      #   And make it simpler to check with "exist_file?"
+      #   And make it simpler to check with "file?"
 
       URI.parse(TARGET_URL + @word.encode).open do |url|
-        return 1 unless exist_file?(url)
+        unless file?(url)
+          warn "Unable to find file: #{@word}"
+          return 1
+        end
 
         url.rewind
         url_save(url, path)
@@ -125,10 +128,7 @@ module PODDL
 
     def exist_file?(url)
       # Check if url return a not available audio clip
-      return true unless Digest::SHA256.hexdigest(url.read) == NOT_AVAILABLE_HASH
-
-      warn "Unable to find file: #{@word}"
-      warn "Kanji might be required even if it's not in common use" if @word.kanji.nil?
+      Digest::SHA256.hexdigest(url.read) != NOT_AVAILABLE_HASH
     end
   end
 
