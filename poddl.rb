@@ -17,14 +17,9 @@ require "open-uri"
 require "digest"
 
 module PODDL
-  # Downloads files from languagepod101 with specified kanji/kana
-  class Get
-    NOT_AVAILABLE_HASH = "ae6398b5a27bc8c0a771df6c907ade794be15518174773c58c7c7ddd17098906" # SHA-256
-    TARGET_URL = "https://assets.languagepod101.com/dictionary/japanese/audiomp3.php"
-
+  # Word composed of Kanji and Kana
+  class Word
     attr_reader :kana, :kanji
-
-    # Value assign methods
 
     # Assign value if input is only kana
     def kana=(kana)
@@ -36,6 +31,50 @@ module PODDL
       @kanji = kanji if kanji.nil? || valid_string?(kanji, /^\p{han}+$/)
     end
 
+    def initialize(kana, kanji)
+      self.kana = kana
+      self.kanji = kanji
+    end
+
+    def defined?
+      return 0 if defined?(@kana) && defined?(@kanji)
+      warn "Not a valid word"
+    end
+
+    # Return a formated uri query
+    def encode
+      # Only encode with kanji when necessary
+      if @kanji.nil?
+        "? #{URI.encode_www_form([['kana', @kana]])}"
+      else
+        "? #{URI.encode_www_form([['kana', @kana], ['kanji', @kanji]])}"
+      end
+    end
+
+    # Formats @kana and @Kanji into simple a usable string
+    def to_s
+      @kanji.nil? ? @kana.to_s : "#{@kanji}_#{@kana}.mp3"
+    end
+
+    private
+
+    # Check if string is valid based on Regex
+    def valid_string?(str, regex)
+      str.match?(regex)
+    end
+  end
+
+  # Downloads files from languagepod101 with specified kanji/kana
+  class Get
+    NOT_AVAILABLE_HASH = "ae6398b5a27bc8c0a771df6c907ade794be15518174773c58c7c7ddd17098906" # SHA-256
+    TARGET_URL = "https://assets.languagepod101.com/dictionary/japanese/audiomp3.php"
+
+    attr_accessor :word
+
+    def initialize(word)
+      @word = word
+    end
+
     # Public Methods
 
     # Prepeare and find issues before actuall downloading
@@ -45,11 +84,8 @@ module PODDL
         return 1
       end
 
-      unless defined?(@kana) && defined?(@kanji)
-        warn "Input not a valid string"
-        return 1
-      end
-
+      return unless @word.defined?
+      
       url_open(path)
     end
 
@@ -62,7 +98,7 @@ module PODDL
       #   It will also remove the need for the url.rewind.
       #   And make it simpler to check with "exist_file?"
 
-      URI.parse(TARGET_URL + encode_uri).open do |url|
+      URI.parse(TARGET_URL + @word.encode).open do |url|
         return 1 unless exist_file?(url)
 
         url.rewind
@@ -71,52 +107,28 @@ module PODDL
 
     rescue SocketError, RuntimeError # Connection? Wrong URL?
       warn "Failed to open #{TARGET_URL}!"
-      exit 1
+      return 1
     end
 
     # Open file and save output of the url
     def url_save(url, path)
-      puts "Downloading: #{pretty_name(file: true)}.mp3"
-      File.open("#{path}/#{pretty_name(file: true)}.mp3", "w") do |f|
+      puts "Downloading: #{@word}"
+      File.open("#{path}/#{@word}", "w") do |f|
         # Files are small enough to be saved in one part
         f.write(url.read) ? 0 : 1
       end
 
     rescue Errno::ENOENT, Errno::EACCES, Errno::EISDIR, Errno::ENOSPC
-      warn "Failed to write to #{path}/#{pretty_name(file: true)}.mp3!"
-      exit 1
+      warn "Failed to write to #{path}/#{@word}.mp3!"
+      return 1
     end
 
     def exist_file?(url)
       # Check if url return a not available audio clip
       return true unless Digest::SHA256.hexdigest(url.read) == NOT_AVAILABLE_HASH
 
-      warn "Unable to find file: #{pretty_name(file: true)}"
-      warn "Kanji might be required even if it's not in common use" if @kanji.nil?
-    end
-
-    # Check if string is valid based on Regex
-    def valid_string?(str, regex)
-      str.match?(regex)
-    end
-
-    # Return a formated uri query
-    def encode_uri
-      # Only encode with kanji when necessary
-      if @kanji.nil?
-        "? #{URI.encode_www_form([['kana', @kana]])}"
-      else
-        "? #{URI.encode_www_form([['kana', @kana], ['kanji', @kanji]])}"
-      end
-    end
-
-    # Formats @kana and @Kanji into simple a pretty string
-    def pretty_name(file: false)
-      if file
-        @kanji.nil? ? @kana.to_s : "#{@kanji}_#{@kana}" # filename
-      else
-        @kanji.nil? ? @kana.to_s : "#{@kanji} 「#{@kana}」" # printing
-      end
+      warn "Unable to find file: #{@word}"
+      warn "Kanji might be required even if it's not in common use" if @word.kanji.nil?
     end
   end
 
@@ -125,13 +137,13 @@ module PODDL
   class InputHandler
     # NOTE: Change path to fit your system
     def initialize(save_path)
-      @poddl = Get.new
       @save_path = save_path
     end
 
     def run(args)
       if args.empty?
-        manual_input
+        # manual_input
+        help
       else
         arg_input(args)
       end
@@ -145,22 +157,22 @@ module PODDL
 
     # Argument input.
     def arg_input(args)
-      new_input(*args)
+      @poddl = Get.new(Word.new(*args))
       @poddl.download(@save_path)
     end
 
-    def manual_input
-      loop do
-        puts "\nTo quit type quit"
-        input = [get_input(:kana), get_input(:kanji)]
-        return 0 if input[0][0].downcase == "q" || input[1][0].downcase == "q"
-
-        @poddl.download(@save_path)
-      end
-
-    rescue Interrupt
-      exit 0
-    end
+    #    def manual_input
+    #      loop do
+    #        puts "\nTo quit type quit"
+    #        input = [get_input(:kana), get_input(:kanji)]
+    #        return 0 if input[0][0].downcase == "q" || input[1][0].downcase == "q"
+    #
+    #        @poddl.download(@save_path)
+    #      end
+    #
+    #    rescue Interrupt
+    #      exit 0
+    #    end
 
     private
 
