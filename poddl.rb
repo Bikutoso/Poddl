@@ -31,13 +31,15 @@ module PODDL
       @kanji = kanji if kanji.nil? || valid_string?(kanji, /^\p{han}+$/)
     end
 
-    def initialize(kana, kanji)
+    def initialize(kana, kanji = nil)
       self.kana = kana
       self.kanji = kanji
     end
 
+    # Returns true if kana & kanji is defined
     def defined?
-      return 0 if defined?(@kana) && defined?(@kanji)
+      return true if defined?(@kana) && defined?(@kanji)
+
       warn "Not a valid word"
     end
 
@@ -53,7 +55,7 @@ module PODDL
 
     # Formats @kana and @Kanji into simple a usable string
     def to_s
-      @kanji.nil? ? @kana.to_s : "#{@kanji}_#{@kana}.mp3"
+      @kanji.nil? ? "#{@kana}.mp3" : "#{@kanji}_#{@kana}.mp3"
     end
 
     private
@@ -84,8 +86,8 @@ module PODDL
         return 1
       end
 
-      return unless @word.defined?
-      
+      return 1 unless @word.defined?
+
       url_open(path)
     end
 
@@ -107,7 +109,6 @@ module PODDL
 
     rescue SocketError, RuntimeError # Connection? Wrong URL?
       warn "Failed to open #{TARGET_URL}!"
-      return 1
     end
 
     # Open file and save output of the url
@@ -120,7 +121,6 @@ module PODDL
 
     rescue Errno::ENOENT, Errno::EACCES, Errno::EISDIR, Errno::ENOSPC
       warn "Failed to write to #{path}/#{@word}.mp3!"
-      return 1
     end
 
     def exist_file?(url)
@@ -193,5 +193,5 @@ if $PROGRAM_NAME == __FILE__
   SAVE_PATH = "#{Dir.home}/Documents/Personal/Langauge/Japanese/Audio"
 
   handler = PODDL::InputHandler.new(SAVE_PATH)
-  handler.run(ARGV)
+  exit handler.run(ARGV)
 end
