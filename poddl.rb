@@ -23,12 +23,12 @@ module PODDL
 
     # Assign value if input is only kana
     def kana=(kana)
-      @kana = kana if valid?(kana, /^(?:\p{hiragana}|\p{katakana}|ー)+$/)
+      @kana = kana if valid?(kana, /\A(?:\p{hiragana}|\p{katakana}|ー)+$\z/)
     end
 
     # Assign value if input is nil or only kanji
     def kanji=(kanji)
-      @kanji = kanji if kanji.nil? || valid?(kanji, /^\p{han}+$/)
+      @kanji = kanji if kanji.nil? || valid?(kanji, /\A\p{han}+$\z/)
     end
 
     def initialize(kana, kanji = nil)
@@ -46,9 +46,9 @@ module PODDL
     def encode
       # Only encode with kanji when necessary
       if @kanji.nil?
-        "? #{URI.encode_www_form([['kana', @kana]])}"
+        "?#{URI.encode_www_form([['kana', @kana]])}"
       else
-        "? #{URI.encode_www_form([['kana', @kana], ['kanji', @kanji]])}"
+        "?#{URI.encode_www_form([['kana', @kana], ['kanji', @kanji]])}"
       end
     end
 
@@ -60,8 +60,8 @@ module PODDL
     private
 
     # Check if string is valid based on Regex
-    def valid?(str, regex)
-      str.match?(regex)
+    def valid?(string, regex)
+      !!regex.match?(string)
     end
   end
 
@@ -101,7 +101,7 @@ module PODDL
       #   And make it simpler to check with "file?"
 
       URI.parse(TARGET_URL + @word.encode).open do |url|
-        unless file?(url)
+        unless empty_file?(url)
           warn "Unable to find file: #{@word}"
           return 1
         end
@@ -126,9 +126,9 @@ module PODDL
       warn "Failed to write to #{path}/#{@word}.mp3!"
     end
 
-    def exist_file?(url)
-      # Check if url return a not available audio clip
-      Digest::SHA256.hexdigest(url.read) != NOT_AVAILABLE_HASH
+    # Empty on "not avaiable" audio clip.
+    def empty_file?(url)
+      !!(Digest::SHA256.hexdigest(url.read) != NOT_AVAILABLE_HASH)
     end
   end
 
@@ -191,7 +191,6 @@ end
 
 if $PROGRAM_NAME == __FILE__
   SAVE_PATH = "#{Dir.home}/Documents/Personal/Langauge/Japanese/Audio"
-
   handler = PODDL::InputHandler.new(SAVE_PATH)
   exit handler.run(ARGV)
 end
