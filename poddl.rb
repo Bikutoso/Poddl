@@ -31,7 +31,7 @@ module PODDL
       @kanji = kanji if kanji.nil? || valid?(kanji, /\A\p{han}+$\z/)
     end
 
-    def initialize(kana, kanji = nil)
+    def initialize(kana = nil, kanji = nil)
       self.kana = kana
       self.kanji = kanji
     end
@@ -72,8 +72,9 @@ module PODDL
 
     attr_accessor :word
 
-    def initialize(word)
-      @word = word
+    def initialize
+      # Initialize word with empty word by default
+      @word = Word.new
     end
 
     # Prepeare and find issues before actuall downloading
@@ -135,7 +136,6 @@ module PODDL
   # Handle how input is done arguments or interactive
   #   also deal with other arguments
   class InputHandler
-    # NOTE: Change path to fit your system
     def initialize(save_path)
       @save_path = save_path
     end
@@ -157,7 +157,8 @@ module PODDL
 
     # Argument input.
     def arg_input(args)
-      @poddl = Get.new(Word.new(*args))
+      @poddl = Get.new
+      @poddl.word = Word.new(*args)
       @poddl.download(@save_path)
     end
 
@@ -190,6 +191,7 @@ module PODDL
 end
 
 if $PROGRAM_NAME == __FILE__
+  # NOTE: Change path to fit your system
   SAVE_PATH = "#{Dir.home}/Documents/Personal/Langauge/Japanese/Audio"
   handler = PODDL::InputHandler.new(SAVE_PATH)
   exit handler.run(ARGV)
