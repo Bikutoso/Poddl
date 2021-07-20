@@ -1,5 +1,9 @@
 # Poddl - Japanese Audio Downloader
 Download Japanese audio clips from languagepod101.
+## Table of contents
+* [Introduction](#introduction)
+* [How to install](#how-to-install)
+* [Usage](#usage)
 ## Introduction
 Poddl was created to easily download audio clips for learning Japanese.
 
