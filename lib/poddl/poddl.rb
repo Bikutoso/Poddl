@@ -1,18 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# License details:
-#   AUTHOR: Victoria Solli
-#   REPOSITORY: gist.github.com/Bikutoso/046f0bfebe9d12a13ce690586d65aff2
-#   LICENSE: Unlicense (https://unlicense.org/)
-#
-# Script Information:
-#   This is my first Ruby project. So it might not be have the best quality.
-#   It's a remake of an old hacked together Python script that i previously used.
-#   So i was a perfect first project for Ruby. Especially with the simplicity of open-uri and digest.
-#   I'm releasing it under Unlicense (public domain) because i don't care how it's being used;
-#   I just hope someone will find a use for it.
-
 require "open-uri"
 require "digest"
 
