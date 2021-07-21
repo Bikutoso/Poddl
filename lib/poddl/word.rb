@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-module PODDL
+module Poddl
   # Word composed of Kanji and Kana
   class Word
     attr_reader :kana, :kanji
