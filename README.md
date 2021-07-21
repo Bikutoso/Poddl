@@ -9,14 +9,15 @@ Poddl was created to easily download audio clips for learning Japanese.
 
 Poddl is written in Ruby
 ## How to install
-Modify the `SAVE_PATH` variable in `poddl.rb` to where you want files to be placed.
+*NOTE: Change DEFAULT_PATH in `lib/poddl/options.rb` to suit your system*
+Build package with `gem build poddl.gemspec`
 
-Copy `poddl.rb` somewhere your `$PATH` mentions with the name `poddl`
-
-*NOTE: There are no standard way of installing it currently.*
+Then install with `gem install poddl-*.*.gem`
 ## Usage
-poddl kana [kanji]
+poddl [options] kana [kanji]
 
 Example 1: `poddl わたし 私`
 
 Example 2: `poddl イギリス`
+
+Example 3: `poddl -d /tmp みせ 店`
