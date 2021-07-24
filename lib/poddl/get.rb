@@ -10,11 +10,8 @@ module Poddl
     NOT_AVAILABLE_HASH = "ae6398b5a27bc8c0a771df6c907ade794be15518174773c58c7c7ddd17098906" # SHA-256
     TARGET_URL = "https://assets.languagepod101.com/dictionary/japanese/audiomp3.php"
 
-    attr_accessor :word
-
-    def initialize
-      # Initialize word with empty word by default
-      @word = Word.new
+    def initialize(word)
+      @word = word
     end
 
     # Prepeare and find issues before actuall downloading

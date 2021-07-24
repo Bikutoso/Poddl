@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.author      = "Victoria Solli"
   s.homepage    = "https://github.com/Bikutoso"
   s.platform    = Gem::Platform::RUBY
-  s.required_ruby_version = ">=2.7"
+  s.required_ruby_version = ">=2.5"
   s.files       = Dir["**/**"]
   s.executables = ["poddl"]
   s.test_files  = Dir["test/test*.rb"]

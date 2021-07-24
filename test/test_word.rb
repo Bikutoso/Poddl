@@ -9,13 +9,6 @@ class TestWord < Test::Unit::TestCase
   REG_KANA = /\A(?:\p{hiragana}|\p{katakana}|ー)+$\z/.freeze
   REG_KANJI = /\A(?:\p{han}|\p{hiragana})+$\z/.freeze
 
-  # Test if kana and kanji is nil when initialized without arguments
-  def test_value_nil
-    tw = Poddl::Word.new
-    assert_nil(tw.kana, "Kana should have been initialized to nil")
-    assert_nil(tw.kanji, "Kanji should have been initialized to nil")
-  end
-
   # Test if the value if kana/kanji is correct
   def test_value_valid
     tw = Poddl::Word.new("きょう", "今日")
@@ -38,13 +31,12 @@ class TestWord < Test::Unit::TestCase
 
   # Test if it gets correct value if reassigned
   def test_reassing
-    tw = Poddl::Word.new
     wordlist = [["きせつ", "季節"], ["コンビニ", nil],
                 ["てんき", "電気"], ["いそぐ", "急ぐ"],
                 ["びょうき", "病気"], ["ギター", nil]]
 
     wordlist.each do |word|
-      tw.assign(*word)
+      tw = Poddl::Word.new(*word)
       assert_equal(word[0], tw.kana, "Kana is #{tw.kana} but expected #{word[0]}")
       assert_equal(word[1], tw.kanji, "Kanji is #{tw.kanji} but expected #{word[0]}")
     end

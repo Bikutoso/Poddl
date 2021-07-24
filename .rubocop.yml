@@ -11,6 +11,10 @@ Layout/LineLength:
 Layout/EmptyLinesAroundExceptionHandlingKeywords:
   Enabled: false
 
+# Poddl uses a Japanese charachters in examples
+Style/AsciiComments:
+  Enabled: false
+
 # Complain?
 Gemspec/DateAssignment: # (new in 1.10)
   Enabled: true

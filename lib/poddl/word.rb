@@ -5,14 +5,16 @@ require "open-uri"
 module Poddl
   # Word composed of Kanji and Kana
   class Word
-    REG_KANA = /\A(?:\p{hiragana}|\p{katakana}|ー)+$\z/.freeze
-    REG_KANJI = /\A(?:\p{han}|\p{hiragana})+$\z/.freeze
-
     attr_reader :kana, :kanji
 
-    # Assign new value to word
-    def assign(kana, kanji = nil)
-      if !kana.nil? && valid?(kana, REG_KANA) && (kanji.nil? || valid?(kanji, REG_KANJI))
+    # Create a new Japanese word contaning kana (and kanji)
+    def initialize(kana, kanji = nil)
+      reg_kana = /\A(?:\p{hiragana}|\p{katakana}|ー)+$\z/.freeze
+      reg_kanji = /\A(?:\p{han}|\p{hiragana})+$\z/.freeze
+
+      # Assign variables only if kana and kanji is valid.
+      #   Othervise assign both to nil
+      if valid?(kana, reg_kana) && (kanji.nil? || valid?(kanji, reg_kanji))
         @kana = kana
         @kanji = kanji
       else
@@ -20,18 +22,17 @@ module Poddl
       end
     end
 
-    def initialize(kana = nil, kanji = nil)
-      assign(kana, kanji)
-    end
-
-    # Does it contain an empty word?
-    def nil?
-      # Only kana matters for checking if nil
+    # Is the instance empty?
+    def empty?
       @kana.nil?
     end
 
-    # Return a formated uri query
+    # Encodes word with 
+    # {URI#encode_www_form}[https://ruby-doc.org/stdlib/libdoc/uri/rdoc/URI.html#method-c-encode_www_form]
+    # encoded form string
     def encode
+      return if empty?
+
       # Only encode with kanji when necessary
       if @kanji.nil?
         "?#{URI.encode_www_form([['kana', @kana]])}"
@@ -42,8 +43,13 @@ module Poddl
 
     # Formats @kana and @Kanji into simple a usable string
     def to_s
+      return if empty?
+
       @kanji.nil? ? "#{@kana}.mp3" : "#{@kanji}_#{@kana}.mp3"
     end
+
+    # Is the instance nil?
+    alias nil? empty?
 
     private
 
