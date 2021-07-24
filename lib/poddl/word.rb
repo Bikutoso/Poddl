@@ -9,12 +9,12 @@ module Poddl
 
     # Assign value if input is only kana
     def kana=(kana)
-      @kana = kana if valid?(kana, /\A(?:\p{hiragana}|\p{katakana}|ー)+$\z/)
+      @kana = valid?(kana, /\A(?:\p{hiragana}|\p{katakana}|ー)+$\z/) ? kana : nil
     end
 
     # Assign value if input is nil or only kanji
     def kanji=(kanji)
-      @kanji = kanji if kanji.nil? || valid?(kanji, /\A\p{han}+$\z/)
+      @kanji = (kanji.nil? || valid?(kanji, /\A(?:\p{han}|\p{hiragana})+$\z/)) ? kanji : nil
     end
 
     def initialize(kana = nil, kanji = nil)
