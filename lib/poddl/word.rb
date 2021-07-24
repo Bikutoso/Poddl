@@ -5,27 +5,29 @@ require "open-uri"
 module Poddl
   # Word composed of Kanji and Kana
   class Word
+    REG_KANA = /\A(?:\p{hiragana}|\p{katakana}|ー)+$\z/.freeze
+    REG_KANJI = /\A(?:\p{han}|\p{hiragana})+$\z/.freeze
+
     attr_reader :kana, :kanji
 
-    # Assign value if input is only kana
-    def kana=(kana)
-      @kana = valid?(kana, /\A(?:\p{hiragana}|\p{katakana}|ー)+$\z/) ? kana : nil
-    end
-
-    # Assign value if input is nil or only kanji
-    def kanji=(kanji)
-      @kanji = (kanji.nil? || valid?(kanji, /\A(?:\p{han}|\p{hiragana})+$\z/)) ? kanji : nil
+    # Assign new value to word
+    def assign(kana, kanji = nil)
+      if !kana.nil? && valid?(kana, REG_KANA) && (kanji.nil? || valid?(kanji, REG_KANJI))
+        @kana = kana
+        @kanji = kanji
+      else
+        @kana, @kanji = nil
+      end
     end
 
     def initialize(kana = nil, kanji = nil)
-      self.kana = kana
-      self.kanji = kanji
+      assign(kana, kanji)
     end
 
-    # Returns true if kana & kanji is defined
-    def defined?
-      # Double negate to return boolean
-      !!(defined?(@kana) && defined?(@kanji))
+    # Does it contain an empty word?
+    def nil?
+      # Only kana matters for checking if nil
+      @kana.nil?
     end
 
     # Return a formated uri query

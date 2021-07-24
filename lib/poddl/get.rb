@@ -24,7 +24,7 @@ module Poddl
         return 1
       end
 
-      unless @word.defined?
+      if @word.nil?
         warn "Not a valid word"
         return 1
       end

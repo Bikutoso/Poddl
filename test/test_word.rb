@@ -6,8 +6,8 @@ require_relative "../lib/poddl/word"
 
 # Word should handle a Japanese word
 class TestWord < Test::Unit::TestCase
-  REG_KANA = /\A(?:\p{hiragana}|\p{katakana}|ー)+$\z/
-  REG_KANJI = /\A(?:\p{han}|\p{hiragana})+$\z/
+  REG_KANA = /\A(?:\p{hiragana}|\p{katakana}|ー)+$\z/.freeze
+  REG_KANJI = /\A(?:\p{han}|\p{hiragana})+$\z/.freeze
 
   # Test if kana and kanji is nil when initialized without arguments
   def test_value_nil
@@ -44,25 +44,9 @@ class TestWord < Test::Unit::TestCase
                 ["びょうき", "病気"], ["ギター", nil]]
 
     wordlist.each do |word|
-      tw.kana, tw.kanji = word
+      tw.assign(*word)
       assert_equal(word[0], tw.kana, "Kana is #{tw.kana} but expected #{word[0]}")
       assert_equal(word[1], tw.kanji, "Kanji is #{tw.kanji} but expected #{word[0]}")
-    end
-  end
-
-  # Check if defined? is valid
-  def test_defined
-    tw = Poddl::Word.new
-    # Check if empty is defined (nil)
-    assert(tw.defined?, "Empty word returned true")
-
-    # Check if all retun true
-    wordlist = [["くるま", "車"], ["め", "目"],
-                ["はがき", "葉書"], ["あたらしい", "新しい"],
-                ["メール", nil], ["らいげつ", "来月"]]
-    wordlist.each do |word|
-      tw.kana, tw.kanji = word
-      assert(tw.defined?, "#{word[0]}, #{word[1]} does not return true")
     end
   end
 
