@@ -1,5 +1,6 @@
-#!/usr/bin/env ruby
 # frozen_string_literal: true
+
+require "open-uri"
 
 module Poddl
   # Word composed of Kanji and Kana
