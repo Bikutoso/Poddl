@@ -8,6 +8,8 @@ module Poddl
     attr_reader :kana, :kanji
 
     # Create a new Japanese word contaning kana (and kanji)
+    #
+    # It will initialize kana and kanji with +nil+ if input strings are not kana (and kanji)
     def initialize(kana, kanji = nil)
       reg_kana = /\A(?:\p{hiragana}|\p{katakana}|ー)+$\z/.freeze
       reg_kanji = /\A(?:\p{han}|\p{hiragana})+$\z/.freeze
@@ -27,7 +29,7 @@ module Poddl
       @kana.nil?
     end
 
-    # Encodes word with 
+    # Encodes word with
     # {URI#encode_www_form}[https://ruby-doc.org/stdlib/libdoc/uri/rdoc/URI.html#method-c-encode_www_form]
     # encoded form string
     def encode

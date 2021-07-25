@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require "poddl/runner"
+require "poddl/application"
 
-runner = Poddl::Runner.new(ARGV)
-runner.run
+app = Poddl::Application.new(ARGV)
+exit app.run

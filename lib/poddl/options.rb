@@ -3,6 +3,7 @@
 require "optparse"
 
 module Poddl
+  # Defines and parses options
   class Options
     DEFAULT_PATH = "#{Dir.home}/Documents/Personal/Langauge/Japanese/Audio"
     attr_reader :save_path, :word
