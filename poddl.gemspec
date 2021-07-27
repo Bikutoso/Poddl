@@ -2,7 +2,7 @@ Gem::Specification.new do |s|
   # General
   s.name        = "poddl"
   s.version     = "1.0.0.dev"
-  s.license    = "ISC"
+  s.license = "ISC"
   s.summary     = "Download Japanese audio clips from languagepod101"
   s.description = "" # TODO: Write this.
   s.author      = "Victoria Solli"

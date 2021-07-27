@@ -1,3 +1,6 @@
+AllCops:
+  Exclude:
+    - 'test/*.rb'
 
 # Prefer double quotes
 Style/StringLiterals:
