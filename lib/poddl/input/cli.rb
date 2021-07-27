@@ -7,7 +7,7 @@ module Poddl
     # Input from Command Line.
     class CLI < Poddl::Input::Handler
       def run
-        @poddl.download(@options.save_path)
+        download(Poddl::Word.new(*@options.word))
       end
     end
   end

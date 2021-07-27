@@ -6,7 +6,7 @@ require_relative "word"
 
 module Poddl
   # Downloads files from languagepod101 with specified kanji/kana
-  class Get
+  class Downloader
     NOT_AVAILABLE_HASH = "ae6398b5a27bc8c0a771df6c907ade794be15518174773c58c7c7ddd17098906" # SHA-256
     TARGET_URL = "https://assets.languagepod101.com/dictionary/japanese/audiomp3.php"
 

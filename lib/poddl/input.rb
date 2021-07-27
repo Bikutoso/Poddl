@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "get"
+require_relative "downloader"
 
 module Poddl
   # This module handles various input methods
@@ -9,12 +9,18 @@ module Poddl
     class Handler
       def initialize(options)
         @options = options
-        @poddl = Poddl::Get.new(Poddl::Word.new(*@options.word))
       end
 
-      # Start the Handler
+      # Run the specified handler
       def run
-        warn "This is top level class"
+        nil
+      end
+
+      private
+
+      # This creates and calls the Dorwnloader to start downloading.
+      def get(word)
+        Poddl::Downloader.new(word).download(@options.save_path)
       end
     end
   end
