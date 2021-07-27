@@ -1,0 +1,17 @@
+Tue, 27 Jul 2021 20:52:50 +0200
+LICENSE	Sat, 24 Jul 2021 03:27:35 +0200
+README.md	Thu, 22 Jul 2021 00:14:09 +0200
+bin/poddl	Sun, 25 Jul 2021 04:29:23 +0200
+lib/poddl/application.rb	Sun, 25 Jul 2021 05:23:05 +0200
+lib/poddl/downloader.rb	Tue, 27 Jul 2021 19:00:25 +0200
+lib/poddl/input/cli.rb	Tue, 27 Jul 2021 19:15:51 +0200
+lib/poddl/input/file.rb	Sun, 25 Jul 2021 05:39:38 +0200
+lib/poddl/input/interactive.rb	Sun, 25 Jul 2021 05:39:38 +0200
+lib/poddl/input.rb	Tue, 27 Jul 2021 19:15:40 +0200
+lib/poddl/options.rb	Tue, 27 Jul 2021 17:29:21 +0200
+lib/poddl/word.rb	Tue, 27 Jul 2021 20:51:00 +0200
+lib/poddl.rb	Sat, 24 Jul 2021 23:41:46 +0200
+poddl-1.0.0.dev.gem	Tue, 27 Jul 2021 14:05:31 +0200
+test/test_get.rb	Sat, 24 Jul 2021 02:33:02 +0200
+test/test_options.rb	Wed, 21 Jul 2021 20:38:24 +0200
+test/test_word.rb	Tue, 27 Jul 2021 16:12:12 +0200
