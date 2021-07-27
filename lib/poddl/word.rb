@@ -3,13 +3,31 @@
 require "open-uri"
 
 module Poddl
-  # Word composed of Kanji and Kana
+  # Defines a Japanese word.
+  #
+  # == Example
+  #   require "poddl/word"
+  #
+  #   class Someclass
+  #     attr_accessor :words
+  #
+  #     def initialize
+  #       @words = []
+  #     end
+  #
+  #     def add_word(kana, kanji = nil)
+  #       @words.append(Poddl::Word.new(kana, kanji)
+  #     end
+  #   end
   class Word
+
+    # @return [String]
     attr_reader :kana, :kanji
 
-    # Create a new Japanese word contaning kana (and kanji)
-    #
-    # It will initialize kana and kanji with +nil+ if input strings are not kana (and kanji)
+    # Create new word from parameters
+    # 
+    # @param kana [String] hiragana or katakana
+    # @param kanji [String, nil] kanji and hiragana or nil
     def initialize(kana, kanji = nil)
       reg_kana = /\A(?:\p{hiragana}|\p{katakana}|ー)+$\z/.freeze
       reg_kanji = /\A(?:\p{han}|\p{hiragana})+$\z/.freeze
@@ -24,14 +42,16 @@ module Poddl
       end
     end
 
-    # Is the instance empty?
+    # Returns boolean based on if instance is considered empty.
+    # 
+    # @return [Boolean] the resulting boolean
     def empty?
       @kana.nil?
     end
 
-    # Encodes word with
-    # {URI#encode_www_form}[https://ruby-doc.org/stdlib/libdoc/uri/rdoc/URI.html#method-c-encode_www_form]
-    # encoded form string
+    # Formats word into URI query.
+    #
+    # @return [String] the resulting URI query
     def encode
       return if empty?
 
@@ -43,7 +63,11 @@ module Poddl
       end
     end
 
-    # Formats @kana and @Kanji into simple a usable string
+    # Formats Word into string.
+    # @note String is formated into a filename with the mp3 file extension.
+    #   E.g. <tt>駅_えき.mp3</tt>
+    # 
+    # @return [String] the resulting string
     def to_s
       return if empty?
 
@@ -55,7 +79,11 @@ module Poddl
 
     private
 
-    # Check if string is valid based on Regex
+    # Maches a string with a regex expression.
+    #
+    # @param string [String] string to compare
+    # @param regex  [Regexp] regex to compare
+    # @return [Boolean] the result of the match
     def valid?(string, regex)
       !!regex.match?(string)
     end
