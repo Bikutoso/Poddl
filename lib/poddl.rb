@@ -9,7 +9,10 @@
 #            Poddl::Word.new("ピアノ")]
 #
 #   word.each do |word|
-#     word.download("/tmp") unless word.empty?
+#     next if word.empty?
+#
+#     poddl = Poddl::Downloader.new(word)
+#     poddl.download("/tmp")
 #   end
 module Poddl
 end

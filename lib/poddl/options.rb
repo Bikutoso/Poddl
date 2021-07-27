@@ -20,7 +20,8 @@ module Poddl
       OptionParser.new do |opts|
         opts.banner = "Usage: poddl [options] kana [kanji]"
 
-        opts.on("-d", "--directory path", String, "Path to download directory") do |path|
+        opts.on("-d", "--directory path", String,
+                "Path to download directory") do |path|
           @save_path = path
         end
 

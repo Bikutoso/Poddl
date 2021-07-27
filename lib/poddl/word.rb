@@ -6,6 +6,7 @@ module Poddl
   # Defines a Japanese word.
   #
   # == Example
+  #
   #   require "poddl/word"
   #
   #   class Someclass
@@ -16,16 +17,15 @@ module Poddl
   #     end
   #
   #     def add_word(kana, kanji = nil)
-  #       @words.append(Poddl::Word.new(kana, kanji)
+  #       @words.append(Poddl::Word.new(kana, kanji))
   #     end
   #   end
   class Word
-
     # @return [String]
     attr_reader :kana, :kanji
 
     # Create new word from parameters
-    # 
+    #
     # @param kana [String] hiragana or katakana
     # @param kanji [String, nil] kanji and hiragana or nil
     def initialize(kana, kanji = nil)
@@ -43,7 +43,7 @@ module Poddl
     end
 
     # Returns boolean based on if instance is considered empty.
-    # 
+    #
     # @return [Boolean] the resulting boolean
     def empty?
       @kana.nil?
@@ -66,7 +66,7 @@ module Poddl
     # Formats Word into string.
     # @note String is formated into a filename with the mp3 file extension.
     #   E.g. <tt>駅_えき.mp3</tt>
-    # 
+    #
     # @return [String] the resulting string
     def to_s
       return if empty?
