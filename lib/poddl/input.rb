@@ -7,7 +7,6 @@ module Poddl
   module Input
     # Base object for all input handlers
     class Handler
-
       # Initialize instance with specified argument options
       # @param options [Poddl::Options] parsed optparse object
       def initialize(options)
@@ -22,7 +21,7 @@ module Poddl
 
       private
 
-      # Creates {Poddl::Downloader} and calls {Poddl::Downloader#download} 
+      # Creates {Poddl::Downloader} and calls {Poddl::Downloader#download}
       # with the save path specified in the options
       #
       # @param word [Poddl::Word] word object

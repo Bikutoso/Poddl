@@ -4,6 +4,7 @@
 require "test/unit"
 require "shoulda"
 require_relative "../lib/poddl/word"
+require_relative "../lib/poddl/downloader" # Modifies Word class to include #encode
 
 # Tests if Word class preforms as expected
 class WordTest < Test::Unit::TestCase

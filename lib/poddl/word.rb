@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "open-uri"
-
 module Poddl
   # Defines a Japanese word.
   #
@@ -46,20 +44,6 @@ module Poddl
     # @return [Boolean] the resulting boolean
     def empty?
       @kana.nil?
-    end
-
-    # Formats word into URI query.
-    #
-    # @return [String] the resulting URI query
-    def encode
-      return if empty?
-
-      # Only encode with kanji when necessary
-      if @kanji.nil?
-        "?#{URI.encode_www_form([['kana', @kana]])}"
-      else
-        "?#{URI.encode_www_form([['kana', @kana], ['kanji', @kanji]])}"
-      end
     end
 
     # Formats Word into string.

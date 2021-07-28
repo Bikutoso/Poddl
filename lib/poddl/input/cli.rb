@@ -6,7 +6,6 @@ module Poddl
   module Input
     # Handles the input from the command line interface
     class CLI < Poddl::Input::Handler
-      
       # Calls {Poddl::Input::Handler#get} the word specified word.
       # @return [0,1] reutrn value
       # @see Poddl::Input::Handler#run

@@ -6,7 +6,7 @@ module Poddl
   # Defines and parses options
   class Options
     # Default path for downloads
-    # 
+    #
     # @note Change this to suit your system
     # @todo Seperate this into a config file or something
     DEFAULT_PATH = "#{Dir.home}/Documents/Personal/Langauge/Japanese/Audio"

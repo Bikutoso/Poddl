@@ -13,7 +13,6 @@ module Poddl
   # - - {Poddl::Input::Interactive}: Downloads words as questions in the program
   # - - {Poddl::Input::File}: Downloads words from a file
   class Application
-
     # Initialize with options
     # @param argv [argv} CLI arguments
     def initialize(argv)

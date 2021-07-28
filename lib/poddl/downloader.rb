@@ -30,7 +30,7 @@ module Poddl
 
     # Starts the download process of the word specified on initialization.
     # @todo Make the parameter an instance variable instead.
-    # 
+    #
     # @param path [String] download directory
     # @return [0, 1] return value
     def download(path)
@@ -94,11 +94,28 @@ module Poddl
     # Checks if the SHA256 of the input maches the {NOT_AVAILABLE_HASH}.
     # @note The file is considered empty if it contains an audio clip that says:
     #   <em>"The audio for this clip is currently not available"</em>
-    # 
+    #
     # @param url [StringIO] URI file object
     # @return [Boolean] the result
     def empty_file?(url)
       !!(Digest::SHA256.hexdigest(url.read) != NOT_AVAILABLE_HASH)
+    end
+  end
+
+  # Extends with URI string encoding
+  class Word
+    # Formats word into URI query.
+    #
+    # @return [String] the resulting URI query
+    def encode
+      return if empty?
+
+      # Only encode with kanji when necessary
+      if @kanji.nil?
+        "?#{URI.encode_www_form([['kana', @kana]])}"
+      else
+        "?#{URI.encode_www_form([['kana', @kana], ['kanji', @kanji]])}"
+      end
     end
   end
 end
