@@ -6,6 +6,13 @@ require_relative "word"
 
 module Poddl
   # Downloads files from languagepod101 with specified kanji/kana
+  # @example Simple download
+  #   require "poddl"
+  #
+  #   word = Poddl::Word.new("えき", "駅")
+  #
+  #   poddl = Poddl::Downloader.new(word)
+  #   poddl.download("/tmp")
   class Downloader
     # SHA-256 for a file that's considered empty.
     # @note The actuall file from this hash is an audio clips that says:

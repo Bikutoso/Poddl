@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 # Poddl is a module for downloading Japanese audio clips.
-# == Basic example
-#
+# @example Download a list of {Poddl::Word}s
 #   require "poddl"
 #
 #   words = [Poddl::Word.new("えき", "駅"),

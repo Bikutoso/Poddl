@@ -3,22 +3,30 @@
 require_relative "downloader"
 
 module Poddl
-  # This module handles various input methods
+  # Module for various input methods
   module Input
-    # Parent class of all handlers.
+    # Base object for all input handlers
     class Handler
+
+      # Initialize instance with specified argument options
+      # @param options [Poddl::Options] parsed optparse object
       def initialize(options)
         @options = options
       end
 
-      # Run the specified handler
+      # Runs selected handler
+      # @return [0,1] return value
       def run
-        nil
+        0
       end
 
       private
 
-      # This creates and calls the Dorwnloader to start downloading.
+      # Creates {Poddl::Downloader} and calls {Poddl::Downloader#download} 
+      # with the save path specified in the options
+      #
+      # @param word [Poddl::Word] word object
+      # @return [0,1] return value
       def get(word)
         Poddl::Downloader.new(word).download(@options.save_path)
       end

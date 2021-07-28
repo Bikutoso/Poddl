@@ -4,8 +4,12 @@ require_relative "../word"
 
 module Poddl
   module Input
-    # Input from Command Line.
+    # Handles the input from the command line interface
     class CLI < Poddl::Input::Handler
+      
+      # Calls {Poddl::Input::Handler#get} the word specified word.
+      # @return [0,1] reutrn value
+      # @see Poddl::Input::Handler#run
       def run
         get(Poddl::Word.new(*@options.word))
       end

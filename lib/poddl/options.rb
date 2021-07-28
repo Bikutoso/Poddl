@@ -5,9 +5,20 @@ require "optparse"
 module Poddl
   # Defines and parses options
   class Options
+    # Default path for downloads
+    # 
+    # @note Change this to suit your system
+    # @todo Seperate this into a config file or something
     DEFAULT_PATH = "#{Dir.home}/Documents/Personal/Langauge/Japanese/Audio"
-    attr_reader :save_path, :word
 
+    # Save path for downloads
+    attr_reader :save_path
+    # Array containing a kana (and a kanji)
+    attr_reader :word
+
+    # Initialize instance
+    #
+    # @param argv [argv] CLI arguments
     def initialize(argv)
       @save_path = DEFAULT_PATH
       parse(argv)
@@ -16,6 +27,10 @@ module Poddl
 
     private
 
+    # Parse the options with specified parameters
+    #
+    # @param argv [argv] CLI arguments
+    # @return [Array] word arguments
     def parse(argv)
       OptionParser.new do |opts|
         opts.banner = "Usage: poddl [options] kana [kanji]"
