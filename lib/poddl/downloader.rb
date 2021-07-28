@@ -102,7 +102,14 @@ module Poddl
     end
   end
 
-  # Extends with URI string encoding
+  private
+
+  # NOTE: This comment section relates to the Word class in download.rb
+  # as i can't make yard stop overriding the class description with these comments
+  #
+  # Extends poddl/word with #encode
+  def dummy; end
+
   class Word
     # Formats word into URI query.
     #
