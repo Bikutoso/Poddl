@@ -14,23 +14,27 @@ class WordTest < Test::Unit::TestCase
                       ["カメラ", nil],      # Katakana only
                       ["どうやって", nil]]  # Hiragana only
     end
+
     should "Not be empty" do
       @valid_words.each do |word|
         refute_empty Poddl::Word.new(*word)
       end
     end
+
     should "Assign correctly" do
       @valid_words.each do |word|
         tw = Poddl::Word.new(*word)
         assert_equal word, [tw.kana, tw.kanji]
       end
     end
+
     should "Encode correctly" do
       @valid_words.each do |word|
         regex = /\A\?kana=(%\X\X)*(&kanji=(%\X\X)*)?$\z/
         assert_match regex, Poddl::Word.new(*word).encode
       end
     end
+
     should "display to_s correctly" do
       @valid_words.each do |word|
         tw = Poddl::Word.new(*word)
@@ -48,18 +52,22 @@ class WordTest < Test::Unit::TestCase
                         ["¥スキー", nil],      # Katakana only
                         ["どうやってw", nil],  # Hiragana only
                         [nil, "明日"],         # Kanji only
+                        ["今朝", "けさ"],      # Swapped
                         [nil, nil]]            # nil
     end
+
     should "Be empty" do
       @invalid_words.each do |word|
         assert_empty Poddl::Word.new(*word)
       end
     end
+
     should "Return false on encode" do
       @invalid_words.each do |word|
         refute Poddl::Word.new(*word).encode
       end
     end
+
     should "Return nil on to_s" do
       @invalid_words.each do |word|
         refute Poddl::Word.new(*word).to_s
