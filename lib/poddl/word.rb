@@ -5,8 +5,7 @@ require "open-uri"
 module Poddl
   # Defines a Japanese word.
   #
-  # == Example
-  #
+  # @example A class that stores Words
   #   require "poddl/word"
   #
   #   class Someclass
