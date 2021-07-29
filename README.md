@@ -21,7 +21,7 @@ So i'm still learning and the quality of the code might not always be the best.
 
 ## How to install
 Build package with `gem build poddl.gemspec`  
-Then install with `gem install poddl-*.*.gem` 
+Then install with `gem install poddl-1.1.0.dev.gem` 
 
 Create the `PODDL_PATH` environment variable to set a default path. (default: `~/Downloads`)
 
