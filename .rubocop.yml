@@ -11,6 +11,7 @@ Layout/LineLength:
   Severity: info
   Details: 80 soft, 120 hard
   Max: 80 # Why isn't there a way to specify the soft limit
+  AutoCorrect: false
   IgnoredPatterns: ['^\s*#.+'] # Ignore comments, but try to keep them under 80 
 
 # Allow empty line before rescue

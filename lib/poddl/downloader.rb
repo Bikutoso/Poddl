@@ -61,7 +61,7 @@ module Poddl
       #   It will also remove the need for the url.rewind.
       #   And make it simpler to check with "file?"
 
-      URI.parse(TARGET_URL + @word.encode).open do |url|
+      URI.parse(TARGET_URL + encode_word).open do |url|
         unless empty_file?(url)
           warn "Unable to find file: #{@word}"
           return 1
@@ -100,28 +100,18 @@ module Poddl
     def empty_file?(url)
       !!(Digest::SHA256.hexdigest(url.read) != NOT_AVAILABLE_HASH)
     end
-  end
 
-  private
-
-  # NOTE: This comment section relates to the Word class in download.rb
-  # as i can't make yard stop overriding the class description with these comments
-  #
-  # Extends poddl/word with #encode
-  def dummy; end
-
-  class Word
-    # Formats word into URI query.
+    # Formats a Word into URI query.
     #
     # @return [String] the resulting URI query
-    def encode
-      return if empty?
+    def encode_word
+      return if @word.empty?
 
       # Only encode with kanji when necessary
-      if @kanji.nil?
-        "?#{URI.encode_www_form([['kana', @kana]])}"
+      if @word.kanji.nil?
+        "?#{URI.encode_www_form([['kana', @word.kana]])}"
       else
-        "?#{URI.encode_www_form([['kana', @kana], ['kanji', @kanji]])}"
+        "?#{URI.encode_www_form([['kana', @word.kana], ['kanji', @word.kanji]])}"
       end
     end
   end

@@ -29,12 +29,15 @@ class WordTest < Test::Unit::TestCase
       end
     end
 
-    should "Encode correctly" do
-      @valid_words.each do |word|
-        regex = /\A\?kana=(%\X\X)*(&kanji=(%\X\X)*)?$\z/
-        assert_match regex, Poddl::Word.new(*word).encode
-      end
-    end
+# The encode method was moved into Download
+# It is only commented out becasuse i like the regex expression
+#
+#    should "Encode correctly" do
+#      @valid_words.each do |word|
+#        regex = /\A\?kana=(%\X\X)*(&kanji=(%\X\X)*)?$\z/
+#        assert_match regex, Poddl::Word.new(*word).encode
+#      end
+#    end
 
     should "display to_s correctly" do
       @valid_words.each do |word|
