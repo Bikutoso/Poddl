@@ -3,7 +3,7 @@
 Gem::Specification.new do |s|
   # General
   s.name        = "poddl"
-  s.version     = "1.0.0.dev"
+  s.version     = "1.0.0"
   s.license     = "ISC"
   s.summary     = "Download Japanese audio clips from languagepod101"
   s.description = <<-EOS
