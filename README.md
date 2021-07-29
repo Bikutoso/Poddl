@@ -20,10 +20,11 @@ Poddl was a good choice for a first project in Ruby.
 So i'm still learning and the quality of the code might not always be the best.
 
 ## How to install
-*NOTE: Change DEFAULT_PATH in `lib/poddl/options.rb` to suit your system*
-
 Build package with `gem build poddl.gemspec`  
-Then install with `gem install poddl-*.*.gem`
+Then install with `gem install poddl-*.*.gem` 
+
+Set `PODDL_PATH` environment variable to set default path. (default: `~/Downloads`)
+
 ## Usage
 poddl [options] kana [kanji]
 

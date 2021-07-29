@@ -6,10 +6,7 @@ module Poddl
   # Defines and parses options
   class Options
     # Default path for downloads
-    #
-    # @note Change this to suit your system
-    # @todo Seperate this into a config file or something
-    DEFAULT_PATH = "#{Dir.home}/Documents/Personal/Langauge/Japanese/Audio"
+    DEFAULT_PATH = "#{Dir.home}/Downloads"
 
     # Save path for downloads
     attr_reader :save_path
@@ -20,7 +17,9 @@ module Poddl
     #
     # @param argv [argv] CLI arguments
     def initialize(argv)
-      @save_path = DEFAULT_PATH
+      @save_path = ENV.key?("PODDL_PATH") ? ENV["PODDL_PATH"] : DEFAULT_PATH
+
+      
       parse(argv)
       @word = argv
     end
