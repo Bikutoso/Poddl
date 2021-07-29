@@ -9,7 +9,11 @@ class TestOptions < Test::Unit::TestCase
   context "No save directory" do
     should "return default" do
       opts = Poddl::Options.new(["わたし", "私"])
-      assert_equal Poddl::Options::DEFAULT_PATH, opts.save_path
+      if ENV.key?("PODDL_PATH")
+        assert_equal ENV["PODDL_PATH"], opts.save_path
+      else
+        assert_equal Poddl::Options::DEFAULT_PATH, opts.save_path
+      end
     end
   end
 

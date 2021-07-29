@@ -23,7 +23,7 @@ So i'm still learning and the quality of the code might not always be the best.
 Build package with `gem build poddl.gemspec`  
 Then install with `gem install poddl-*.*.gem` 
 
-Set `PODDL_PATH` environment variable to set default path. (default: `~/Downloads`)
+Create the `PODDL_PATH` environment variable to set a default path. (default: `~/Downloads`)
 
 ## Usage
 poddl [options] kana [kanji]

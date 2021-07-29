@@ -21,6 +21,8 @@ module Poddl
     # The URL used to download without the query.
     TARGET_URL = "https://assets.languagepod101.com/dictionary/japanese/audiomp3.php"
 
+    attr_accessor :word
+
     # Initialize instance with specified word.
     #
     # @param word [Poddl::Word] the word to download

@@ -18,10 +18,8 @@ module Poddl
     # @param argv [argv] CLI arguments
     def initialize(argv)
       @save_path = ENV.key?("PODDL_PATH") ? ENV["PODDL_PATH"] : DEFAULT_PATH
-
-      
       parse(argv)
-      @word = argv
+      @word = argv.first(2)
     end
 
     private

@@ -25,7 +25,7 @@ module Poddl
     #
     # @param kana [String] hiragana or katakana
     # @param kanji [String, nil] kanji and hiragana or nil
-    def initialize(kana, kanji = nil)
+    def initialize(kana, kanji = nil, *_)
       reg_kana = /\A(?:\p{hiragana}|\p{katakana}|ー)+$\z/.freeze
       reg_kanji = /\A(?:\p{han}|\p{hiragana})+$\z/.freeze
 
