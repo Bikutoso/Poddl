@@ -66,12 +66,6 @@ class WordTest < Test::Unit::TestCase
       end
     end
 
-    should "Return false on encode" do
-      @invalid_words.each do |word|
-        refute Poddl::Word.new(*word).encode
-      end
-    end
-
     should "Return nil on to_s" do
       @invalid_words.each do |word|
         refute Poddl::Word.new(*word).to_s

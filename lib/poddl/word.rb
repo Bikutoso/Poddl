@@ -26,8 +26,8 @@ module Poddl
     # @param kana [String] hiragana or katakana
     # @param kanji [String, nil] kanji and hiragana or nil
     def initialize(kana, kanji = nil, *_)
-      reg_kana = /\A(?:\p{hiragana}|\p{katakana}|ー)+$\z/.freeze
-      reg_kanji = /\A(?:\p{han}|\p{hiragana})+$\z/.freeze
+      reg_kana = /\A(\p{hiragana}|\p{katakana}|ー)+$\z/.freeze
+      reg_kanji = /\A(\p{han}|\p{hiragana})+$\z/.freeze
 
       # Assign variables only if kana and kanji is valid.
       #   Othervise assign both to nil
@@ -54,7 +54,7 @@ module Poddl
     def to_s
       return if empty?
 
-      @kanji.nil? ? "#{@kana}.mp3" : "#{@kanji}_#{@kana}.mp3"
+      @kanji.nil? ? @kana.to_s : "#{@kanji}_#{@kana}"
     end
 
     # Is the instance nil?

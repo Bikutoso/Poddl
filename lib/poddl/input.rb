@@ -21,13 +21,13 @@ module Poddl
 
       private
 
-      # Creates {Poddl::Downloader} and calls {Poddl::Downloader#download}
+      # Calls {Poddl::Downloader#download}
       # with the save path specified in the options
       #
       # @param word [Poddl::Word] word object
       # @return [0,1] return value
-      def get(word)
-        Poddl::Downloader.new(word).download(@options.save_path)
+      def get(word, poddl = Poddl::Downloader.new)
+        poddl.download(word, @options.save_path)
       end
     end
   end
