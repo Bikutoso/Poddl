@@ -26,12 +26,9 @@ module Poddl
     # @param kana [String] hiragana or katakana
     # @param kanji [String, nil] kanji and hiragana or nil
     def initialize(kana, kanji = nil, *_)
-      reg_kana = /\A(\p{hiragana}|\p{katakana}|ー)+$\z/.freeze
-      reg_kanji = /\A(\p{han}|\p{hiragana})+$\z/.freeze
-
       # Assign variables only if kana and kanji is valid.
       #   Othervise assign both to nil
-      if valid?(kana, reg_kana) && (kanji.nil? || valid?(kanji, reg_kanji))
+      if valid?(kana, kanji)
         @kana = kana
         @kanji = kanji
       else
@@ -57,17 +54,37 @@ module Poddl
       @kanji.nil? ? @kana.to_s : "#{@kanji}_#{@kana}"
     end
 
+    # Formats Word into an array
+    #
+    # @return [Array<String, String>, Array<>] a list contaning kana and kanji
+    def to_a
+      empty? ? [] : [@kana, @kanji]
+    end
+
     # Is the instance nil?
     alias nil? empty?
 
     private
+
+    # Checks if it's a valid word
+    #
+    # @param kana [String] string of kana to check
+    # @param kanji [String] string of kanji to check
+    # @return [Boolean] is it a valid word?
+    def valid?(kana, kanji)
+      reg_kana = /\A(\p{hiragana}|\p{katakana}|ー)+$\z/.freeze
+      reg_kanji = /\A(\p{han}|\p{hiragana})+$\z/.freeze
+
+      regex_match?(kana, reg_kana) &&
+        (kanji.nil? || regex_match?(kanji, reg_kanji))
+    end
 
     # Maches a string with a regex expression.
     #
     # @param string [String] string to compare
     # @param regex  [Regexp] regex to compare
     # @return [Boolean] the result of the match
-    def valid?(string, regex)
+    def regex_match?(string, regex)
       !!regex.match?(string)
     end
   end

@@ -6,12 +6,33 @@ require_relative "word"
 
 module Poddl
   # Downloads files from languagepod101 with specified kanji/kana
-  # @example Simple download
+  # @example Download a single word
   #   require "poddl"
   #
   #   word = Poddl::Word.new("えき", "駅")
   #
   #   Poddl::Downloader.new.download(word, "/tmp")
+  # @example Download from gets
+  #   require "poddl"
+  #
+  #   # Create a new instance so it can be used later
+  #   #   to download words without creating a new instance each time.
+  #   poddl = Poddl::Downloader.new
+  #   input = ""
+  #
+  #   loop do
+  #     printf "Enter input (kana, kanji) :>"
+  #     input = gets.chomp
+  #
+  #     break if input[0].downcase == "q"
+  #
+  #     # Convert to a two line list split on commas
+  #     input = input.gsub(/\s/, "").first(2)
+  #     # Create a word out of the list
+  #     word = Poddl::Word.new(*input)
+  #     # Download the word
+  #     poddl.download(word)
+  #   end
   class Downloader
     # SHA-256 for a file that's considered empty.
     # @note The actuall file from this hash is an audio clips that says:
@@ -66,32 +87,32 @@ module Poddl
     # Checks and prints error if word is nil.
     #
     # @param word [Poddl::Word] checked word
-    # @return [True, nil] return value
+    # @return [Boolean] return value
     def check_nil(word)
       return true unless word.nil?
 
-      warn "Not a valid word"
+      !!(warn "Not a valid word")
     end
 
     # Checks and prints error if directory does not exist.
     #
     # @param path [String] cheked path
-    # @return [True, nil] return value
+    # @return [Boolean] return value
     def check_directory(path)
       return true if File.directory?(path)
 
-      warn "#{path} is not a valid directory"
+      !!(warn "#{path} is not a valid directory")
     end
 
     # Checks and prints error if the data is invalid.
     #
     # @param data [String] data to check
-    # @param data [String] used in error printing
-    # @return [True, nil] return value
+    # @param word [String] used in error printing
+    # @return [Boolean] return value
     def check_data(data, word)
       return true unless empty_file?(data)
 
-      warn "Unable to find file: #{word}.mp3"
+      !!(warn "Unable to find file: #{word}.mp3")
     end
 
     # Checks if the SHA256 of the input maches the {NOT_AVAILABLE_HASH}.
@@ -106,16 +127,19 @@ module Poddl
 
     # Formats a Word into URI query.
     #
-    # @param word [Poddl::Word] selected word
+    # @param word [#to_a] selected word
     # @return [String] the resulting URI query
     def encode_word(word)
-      return if word.empty?
+      return unless word.respond_to?("to_a")
+
+      wlst = word.to_a.first(2)
+      return if wlst.empty?
 
       # Only encode with kanji when necessary
-      if word.kanji.nil?
-        "?#{URI.encode_www_form([['kana', word.kana]])}"
+      if wlst[1].nil?
+        "?#{URI.encode_www_form([['kana', wlst[0]]])}"
       else
-        "?#{URI.encode_www_form([['kana', word.kana], ['kanji', word.kanji]])}"
+        "?#{URI.encode_www_form([['kana', wlst[0]], ['kanji', wlst[1]]])}"
       end
     end
   end
