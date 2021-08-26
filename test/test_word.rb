@@ -4,7 +4,6 @@
 require "test/unit"
 require "shoulda"
 require_relative "../lib/poddl/word"
-require_relative "../lib/poddl/downloader" # Modifies Word class to include #encode
 
 # Tests if Word class preforms as expected
 class WordTest < Test::Unit::TestCase
@@ -28,16 +27,6 @@ class WordTest < Test::Unit::TestCase
         assert_equal word, [tw.kana, tw.kanji]
       end
     end
-
-# The encode method was moved into Download
-# It is only commented out becasuse i like the regex expression
-#
-#    should "Encode correctly" do
-#      @valid_words.each do |word|
-#        regex = /\A\?kana=(%\X\X)*(&kanji=(%\X\X)*)?$\z/
-#        assert_match regex, Poddl::Word.new(*word).encode
-#      end
-#    end
 
     should "display to_s correctly" do
       @valid_words.each do |word|
