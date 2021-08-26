@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
+require_relative "common"
+
 module Poddl
   module Input
     # @todo Create class
-    class File < Poddl::Input::Handler
+    class File
+      include Poddl::Input::Common
     end
   end
 end

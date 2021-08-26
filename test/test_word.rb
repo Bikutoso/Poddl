@@ -42,7 +42,7 @@ class WordTest < Test::Unit::TestCase
     should "display to_s correctly" do
       @valid_words.each do |word|
         tw = Poddl::Word.new(*word)
-        compare_string = %(#{"#{tw.kanji}_" if tw.kanji}#{tw.kana}.mp3)
+        compare_string = %(#{"#{tw.kanji}_" if tw.kanji}#{tw.kana})
         assert_equal compare_string, tw.to_s
       end
     end
