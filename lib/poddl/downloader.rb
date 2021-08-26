@@ -55,7 +55,7 @@ module Poddl
       return 1 unless check_data(data, word)
 
       puts "Downloaded: #{word}.mp3"
-      url_save(data, "#{path}/#{word}")
+      url_save(data, "#{path}/#{word}.mp3")
     end
 
     private
