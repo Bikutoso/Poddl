@@ -23,14 +23,12 @@ module Poddl
 
     # Create new word from parameters
     #
-    # @param kana [String] hiragana or katakana
-    # @param kanji [String, nil] kanji and hiragana or nil
-    def initialize(kana, kanji = nil, *_)
+    # @param word [Array<String, String>] kanji and hiragana
+    def initialize(word)
       # Assign variables only if kana and kanji is valid.
       #   Othervise assign both to nil
-      if valid?(kana, kanji)
-        @kana = kana
-        @kanji = kanji
+      if valid?(*word)
+        @kana, @kanji = word
       else
         @kana, @kanji = nil
       end
@@ -54,7 +52,7 @@ module Poddl
       @kanji.nil? ? @kana.to_s : "#{@kanji}_#{@kana}"
     end
 
-    # Formats Word into an array
+    # Formats Word into an array. Returns empty array in invalid word.
     #
     # @return [Array<String, String>, Array<>] a list contaning kana and kanji
     def to_a
@@ -69,9 +67,9 @@ module Poddl
     # Checks if it's a valid word
     #
     # @param kana [String] string of kana to check
-    # @param kanji [String] string of kanji to check
+    # @param kanji [String, nil] string of kanji to check
     # @return [Boolean] is it a valid word?
-    def valid?(kana, kanji)
+    def valid?(kana, kanji = nil, *_)
       reg_kana = /\A(\p{hiragana}|\p{katakana}|ー)+$\z/.freeze
       reg_kanji = /\A(\p{han}|\p{hiragana})+$\z/.freeze
 

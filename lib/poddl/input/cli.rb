@@ -19,7 +19,7 @@ module Poddl
       # @return [0,1] reutrn value
       # @see Poddl::Input::Handler#run
       def run
-        word = Poddl::Word.new(*@options.word)
+        word = Poddl::Word.new(@options.word)
         get(word)
       end
     end

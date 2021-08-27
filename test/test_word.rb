@@ -12,27 +12,35 @@ class WordTest < Test::Unit::TestCase
       @valid_words = [["でんしゃ", "電車"], # Kana/Kanji
                       ["いそぐ", "急ぐ"],   # Kanji with hiragana
                       ["カメラ", nil],      # Katakana only
-                      ["どうやって", nil]]  # Hiragana only
+                      ["どうやって"],       # Hiragana only
+                      ["えき", "駅", "エキ"]]  # More items in array
     end
 
     should "Not be empty" do
       @valid_words.each do |word|
-        refute_empty Poddl::Word.new(*word)
+        refute_empty Poddl::Word.new(word)
       end
     end
 
     should "Assign correctly" do
       @valid_words.each do |word|
-        tw = Poddl::Word.new(*word)
-        assert_equal word, [tw.kana, tw.kanji]
+        tw = Poddl::Word.new(word)
+        assert_equal [word[0],word[1]], [tw.kana, tw.kanji]
       end
     end
 
-    should "display to_s correctly" do
+    should "Display to_s correctly" do
       @valid_words.each do |word|
-        tw = Poddl::Word.new(*word)
+        tw = Poddl::Word.new(word)
         compare_string = %(#{"#{tw.kanji}_" if tw.kanji}#{tw.kana})
         assert_equal compare_string, tw.to_s
+      end
+    end
+
+    should "Return array on to_a" do
+      @valid_words.each do |word|
+        tw = Poddl::Word.new(word)
+        assert_equal [word[0], word[1]], tw.to_a
       end
     end
   end
@@ -51,13 +59,19 @@ class WordTest < Test::Unit::TestCase
 
     should "Be empty" do
       @invalid_words.each do |word|
-        assert_empty Poddl::Word.new(*word)
+        assert_empty Poddl::Word.new(word)
       end
     end
 
     should "Return nil on to_s" do
       @invalid_words.each do |word|
-        refute Poddl::Word.new(*word).to_s
+        refute Poddl::Word.new(word).to_s
+      end
+    end
+
+    should "Return empty array on invalid to_a" do
+      @invalid_words.each do |word|
+        assert Poddl::Word.new(word).to_a.empty?
       end
     end
   end
