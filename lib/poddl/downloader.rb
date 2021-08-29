@@ -9,7 +9,7 @@ module Poddl
   # @example Download a single word
   #   require "poddl"
   #
-  #   word = Poddl::Word.new("えき", "駅")
+  #   word = Poddl::Word.new(["えき", "駅"])
   #
   #   Poddl::Downloader.new.download(word, "/tmp")
   # @example Download from gets
@@ -22,18 +22,18 @@ module Poddl
   #
   #   loop do
   #     printf "Enter input (kana, kanji) :>"
-  #     input = gets.chomp
+  #     input = gets.chomp.gsub(/\s/, "")
   #
   #     break if input[0].downcase == "q"
   #
   #     # Convert to a two line list split on commas
-  #     input = input.gsub(/\s/, "").first(2)
+  #     input = input.split(",")
   #     # Create a word out of the list
-  #     word = Poddl::Word.new(*input)
+  #     word = Poddl::Word.new(input)
   #     # Download the word
-  #     poddl.download(word)
+  #     poddl.download(word, "/tmp")
   #   end
-  class Downloader
+class Downloader
     # SHA-256 for a file that's considered empty.
     # @note The actuall file from this hash is an audio clips that says:
     #   <em>"The audio for this clip is currently not available"</em>

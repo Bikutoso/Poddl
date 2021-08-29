@@ -16,7 +16,7 @@ class DownloadTest < Test::Unit::TestCase
                       ["どうやって", nil]]  # Hiragana only
     end
 
-    should "Encode correctly" do
+    should "encode correctly" do
       @valid_words.each do |word|
         regex = /\A\?kana=(%\X\X)*(&kanji=(%\X\X)*)?$\z/
         

@@ -3,20 +3,16 @@
 module Poddl
   # Defines a Japanese word.
   #
-  # @example A class that stores Words
-  #   require "poddl/word"
+  # @example An array of words
+  #  require "poddl/word"
   #
-  #   class Someclass
-  #     attr_accessor :words
+  #  input = [["えき","駅"], ["きく", "聞く"], ["パン"]]
   #
-  #     def initialize
-  #       @words = []
-  #     end
+  #  words = []
   #
-  #     def add_word(kana, kanji = nil)
-  #       @words.append(Poddl::Word.new(kana, kanji))
-  #     end
-  #   end
+  #  input.each do |word|
+  #    words.append(Poddl::Word.new(word))
+  #  end
   class Word
     # @return [String]
     attr_reader :kana, :kanji
@@ -42,8 +38,8 @@ module Poddl
     end
 
     # Formats Word into string.
-    # @note String is formated into a filename with the mp3 file extension.
-    #   E.g. <tt>駅_えき.mp3</tt>
+    # @note String is formated as kanji followed by kana.
+    #   E.g. <tt>駅_えき</tt>
     #
     # @return [String] the resulting string
     def to_s
