@@ -33,7 +33,7 @@ module Poddl
   #     # Download the word
   #     poddl.download(word, "/tmp")
   #   end
-class Downloader
+  class Downloader
     # SHA-256 for a file that's considered empty.
     # @note The actuall file from this hash is an audio clips that says:
     #   <em>"The audio for this clip is currently not available"</em>
