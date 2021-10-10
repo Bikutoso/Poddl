@@ -27,4 +27,3 @@ Style/AsciiComments:
 # Move MethodLength to 20
 Metrics/MethodLength:
   Max: 20
-
