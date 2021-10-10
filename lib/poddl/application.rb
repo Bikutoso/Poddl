@@ -16,7 +16,8 @@ module Poddl
     # Initialize with options
     # @param argv [argv} CLI arguments
     def initialize(argv)
-      @options = Options.new(argv)
+      @options = Options.new.parse(argv)
+      pp @options if $DEBUG
     end
 
     # Starts the application
