@@ -3,53 +3,90 @@
 require "optparse"
 
 module Poddl
-  # Defines and parses options
+  # Creates options
   class Options
-    # Default path for downloads
-    DEFAULT_PATH = "#{Dir.home}/Downloads"
+    # Current version of this application
+    VERSION = "1.1.0-dev"
 
-    # Save path for downloads
-    attr_reader :save_path
-    # Array containing a kana (and a kanji)
-    attr_reader :word
+    # Whatever this is called
+    class ScriptOptions
+      # Default path for downloads
+      DEFAULT_PATH = "#{Dir.home}/Downloads"
+      attr_accessor :save_path, :word, :verbose
 
-    # Initialize instance
-    #
-    # @param argv [argv] CLI arguments
-    def initialize(argv)
-      @save_path = ENV.key?("PODDL_PATH") ? ENV["PODDL_PATH"] : DEFAULT_PATH
-      parse(argv)
-      @word = argv.first(2)
-    end
+      # Default values
+      def initialize
+        self.save_path = ENV.key?("PODDL_PATH") ? ENV["PODDL_PATH"] : DEFAULT_PATH
+        self.word = [nil]
+        self.verbose = $VERBOSE
+      end
 
-    private
+      # Deftine options
+      def define_options(parser)
+        parser.banner = "Usage: poddl [options] kana [kanji]"
+        parser.separator ""
+        parser.separator "Specific options:"
 
-    # Parse the options with specified parameters
-    #
-    # @param argv [argv] CLI arguments
-    # @return [Array] word arguments
-    def parse(argv)
-      OptionParser.new do |opts|
-        opts.banner = "Usage: poddl [options] kana [kanji]"
+        # Additonal options
+        string_save_options(parser)
+        boolean_verbose_option(parser)
 
-        opts.on("-d", "--directory path", String,
-                "Path to download directory") do |path|
-          @save_path = path
-        end
+        parser.separator ""
+        parser.separator "Common options:"
 
-        opts.on("-h", "--help", "Show this message") do
-          puts opts
+        # No argument show at tail. This will print an options summary.
+        parser.on_tail("-h", "--help", "Show this message") do
+          puts parser
           exit
         end
 
-        begin
-          argv = ["-h"] if argv.empty?
-          opts.parse!(argv)
-        rescue OptionParser::ParseError => e
-          warn "#{e.message}\n #{opts}"
-          exit(-1)
+        # Show version
+        parser.on_tail("-V", "--version", "Show version") do
+          puts VERSION
+          exit
+        end
+      end
+
+      # Option to specify new save path
+      def string_save_options(parser)
+        parser.on("-d", "--directory path", String,
+                  "Path to download directory") do |path|
+          self.save_path = path
+        end
+      end
+
+      # Option for verbosity
+      def boolean_verbose_option(parser)
+        parser.on("-v", "--[no-]verbose", "Run verbosely") do |verbose|
+          self.verbose = verbose
         end
       end
     end
+
+    # Return a structure describing the options
+    def parse(args)
+      # Print help if empty arguments
+      args = ["-h"] if args.empty?
+
+      @options = ScriptOptions.new
+      @args = OptionParser.new do |parser|
+        @options.define_options(parser)
+        parser.parse!(args)
+
+        # No more arguments, print help
+        # HACK: Only way to show help after parse. Can't think of another way.
+        if args.empty?
+          puts parser
+          exit
+        end
+        # This becomes the word we want to download
+        @options.word = args.first(2)
+      end
+
+      # Return options
+      @options
+    end
+
+    attr_reader :parser, :options
   end
 end

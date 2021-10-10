@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require_relative "lib/poddl/version"
+require_relative "lib/poddl/options"
 
 Gem::Specification.new do |s|
   # General
   s.name = "poddl"
-  s.version     = Poddl::VERSION
+  s.version     = Poddl::Options::VERSION
   s.license     = "ISC"
   s.summary     = "Download Japanese audio clips from languagepod101"
   s.author      = "Victoria Solli"
