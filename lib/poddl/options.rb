@@ -12,13 +12,12 @@ module Poddl
     class ScriptOptions
       # Default path for downloads
       DEFAULT_PATH = "#{Dir.home}/Downloads"
-      attr_accessor :save_path, :word, :verbose
+      attr_accessor :save_path, :word
 
       # Default values
       def initialize
         self.save_path = ENV.key?("PODDL_PATH") ? ENV["PODDL_PATH"] : DEFAULT_PATH
         self.word = [nil]
-        self.verbose = $VERBOSE
       end
 
       # Deftine options
@@ -58,7 +57,10 @@ module Poddl
       # Option for verbosity
       def boolean_verbose_option(parser)
         parser.on("-v", "--[no-]verbose", "Run verbosely") do |verbose|
-          self.verbose = verbose
+          # Update rubys $VERBOSE variable to update the user choice.
+          # This will make it not bound for the options class,
+          #   and can be used anywhere.
+          $VERBOSE ||= verbose
         end
       end
     end
