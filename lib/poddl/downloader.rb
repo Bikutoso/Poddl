@@ -34,12 +34,9 @@ module Poddl
   #     poddl.download(word, "/tmp")
   #   end
   class Downloader
-    # SHA-256 for a file that's considered empty.
-    # @note The actuall file from this hash is an audio clips that says:
-    #   <em>"The audio for this clip is currently not available"</em>
-    NOT_AVAILABLE_HASH = "ae6398b5a27bc8c0a771df6c907ade794be15518174773c58c7c7ddd17098906"
-    # The URL used to download without the query.
-    TARGET_URL = "https://assets.languagepod101.com/dictionary/japanese/audiomp3.php"
+    def initialize(options)
+      @options = options
+    end
 
     # Starts the download process of the word specified on initialization.
     #
@@ -50,7 +47,7 @@ module Poddl
       return 1 unless check_directory(path)
       return 1 unless check_nil(word)
 
-      data = url_open(TARGET_URL + encode_word(word))
+      data = url_open(@options.url + encode_word(word))
 
       return 1 unless check_data(data, word)
 
@@ -66,8 +63,10 @@ module Poddl
     # @return [String] file data
     def url_open(url)
       URI.parse(url).open.read
+
+    # FIXME: Getting "uninitialized constant" on error class?
     rescue SocketError, RuntimeError # Connection? Wrong URL?
-      warn "Failed to open #{TARGET_URL}!"
+      warn "Failed to open #{@options.url}!"
     end
 
     # Save data to specified file.
@@ -122,7 +121,7 @@ module Poddl
     # @param data [String] data file
     # @return [Boolean] the result
     def empty_file?(data)
-      !!(Digest::SHA256.hexdigest(data) == NOT_AVAILABLE_HASH)
+      !!(Digest::SHA256.hexdigest(data) == @options.url_hash)
     end
 
     # Formats a Word into URI query.

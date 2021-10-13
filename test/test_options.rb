@@ -53,14 +53,17 @@ class TestOptions < Test::Unit::TestCase
   end
 
   context "Specify Verbosity" do
+    setup do
+      $VERBOSE = false
+    end
     should "return true" do
       opts = Poddl::Options.new.parse(["-v", "いぬ", "犬"])
-      assert opts.verbose
+      assert $VERBOSE
     end
 
     should "return false" do
       opts = Poddl::Options.new.parse(["ねこ", "猫"])
-      refute opts.verbose
+      refute $VERBOSE
     end
   end
 end
