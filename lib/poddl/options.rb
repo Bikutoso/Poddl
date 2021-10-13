@@ -8,12 +8,14 @@ module Poddl
     # Current version of this application
     VERSION = "1.1.0-dev"
 
-    # Whatever this is called
+    # Defines Options
     class ScriptOptions
       # Default path for downloads
       DEFAULT_PATH = "#{Dir.home}/Downloads"
+
       # Default URL for downloads
       DEFAULT_SOURCE_URL = "https://assets.languagepod101.com/dictionary/japanese/audiomp3.php"
+
       # SHA-256 for a file that's considered empty.
       # @note The actuall file from this hash is an audio clips that says:
       #   <em>"The audio for this clip is currently not available"</em>
@@ -31,7 +33,11 @@ module Poddl
         self.word = [nil]
       end
 
-      # Deftine options
+      # Defines all options
+      #
+      # @param parser [OptionParser] undefined parser
+      # @return [OptionParser] defined parser
+      # @raise [OptionParser::MissingArgument] missing or incomplete arguments
       def define_options(parser)
         parser.banner = "Usage: poddl [options] kana [kanji]"
         parser.separator ""
@@ -46,8 +52,7 @@ module Poddl
 
         # No argument show at tail. This will print an options summary.
         parser.on_tail("-h", "--help", "Show this message") do
-          puts parser
-          exit
+          raise OptionParser::MissingArgument
         end
 
         # Show version
@@ -57,7 +62,9 @@ module Poddl
         end
       end
 
-      # Option to specify new save path
+      # Options for save path
+      #
+      # @param parser [OptionParser]
       def string_save_options(parser)
         parser.on("-d", "--directory path", String,
                   "Path to download directory") do |path|
@@ -66,6 +73,8 @@ module Poddl
       end
 
       # Option for verbosity
+      #
+      # @param parser [OptionParser]
       def boolean_verbose_option(parser)
         parser.on("-v", "--[no-]verbose", "Run verbosely") do |verbose|
           # Update rubys $VERBOSE variable to update the user choice.
@@ -77,25 +86,28 @@ module Poddl
     end
 
     # Return a structure describing the options
+    #
+    # @param args [Array] arguments (e.g. ARGV)
+    # @return [Poddl::Options::ScriptOptions] finished options
     def parse(args)
       # Print help if empty arguments
       args = ["-h"] if args.empty?
-
       @options = ScriptOptions.new
       @args = OptionParser.new do |parser|
         @options.define_options(parser)
         parser.parse!(args)
 
         # No more arguments, print help
-        # HACK: Only way to show help after parse. Can't think of another way.
-        if args.empty?
-          puts parser
-          exit
-        end
+        raise OptionParser::MissingArgument if args.empty?
+
         # This becomes the word we want to download
         @options.word = args.first(2)
-      end
 
+      # HACK: Only way i could think of not copying code
+      rescue OptionParser::MissingArgument
+        puts parser
+        exit
+      end
       # Return options
       @options
     end

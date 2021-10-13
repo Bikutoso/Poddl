@@ -11,13 +11,13 @@ module Poddl
   #
   #   word = Poddl::Word.new(["えき", "駅"])
   #
-  #   Poddl::Downloader.new.download(word, "/tmp")
+  #   Poddl::Downloader.new(Options).download(word, "/tmp")
   # @example Download from gets
   #   require "poddl"
   #
   #   # Create a new instance so it can be used later
   #   #   to download words without creating a new instance each time.
-  #   poddl = Poddl::Downloader.new
+  #   poddl = Poddl::Downloader.new(Options)
   #   input = ""
   #
   #   loop do
@@ -114,7 +114,7 @@ module Poddl
       !!(warn "Unable to find file: #{word}.mp3")
     end
 
-    # Checks if the SHA256 of the input maches the {NOT_AVAILABLE_HASH}.
+    # Checks if the SHA256 of the input maches the {Poddl::Options::DEFAULT_SOURCE_HASH}.
     # @note The file is considered empty if it contains an audio clip that says:
     #   <em>"The audio for this clip is currently not available"</em>
     #

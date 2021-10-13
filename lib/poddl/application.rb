@@ -17,6 +17,7 @@ module Poddl
     # @param argv [argv} CLI arguments
     def initialize(argv)
       @options = Options.new.parse(argv)
+      puts ENV["PODDL_URL"]
       pp @options if $DEBUG
     end
 
