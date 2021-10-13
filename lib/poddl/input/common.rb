@@ -9,7 +9,7 @@ module Poddl
       #
       # @param word [Poddl::Word] word object
       # @return [0,1] return value
-      def get(word, poddl = Poddl::Downloader.new)
+      def get(word, poddl = Poddl::Downloader.new(@options))
         poddl.download(word, @options.save_path)
       end
     end
