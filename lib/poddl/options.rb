@@ -71,7 +71,7 @@ module Poddl
           # Update rubys $VERBOSE variable to update the user choice.
           # This will make it not bound for the options class,
           #   and can be used anywhere.
-          $VERBOSE ||= verbose
+          $VERBOSE = verbose
         end
       end
     end
