@@ -3,6 +3,7 @@
 require "open-uri"
 require "digest"
 require_relative "word"
+require_relative "filer"
 
 module Poddl
   # Downloads files from languagepod101 with specified kanji/kana
@@ -47,40 +48,47 @@ module Poddl
       return 1 unless check_directory(path)
       return 1 unless check_nil(word)
 
-      data = url_open(@options.url + encode_word(word))
+      data = url_open(@options.url, word)
 
       return 1 unless check_data(data, word)
 
-      puts "Downloaded: #{word}.mp3"
-      url_save(data, "#{path}/#{word}.mp3")
+      Filer.save(data, word, path)
     end
 
     private
 
     # Open and read url.
     #
-    # @param url  [String] url to open
+    # @param url [String] url to open
     # @return [String] file data
-    def url_open(url)
-      URI.parse(url).open.read
+    def url_open(url, word)
+      full_url = url + encode_word(word)
+
+      puts "Downloading: #{word}.mp3"
+
+      URI.parse(full_url).open.read
 
     # FIXME: Getting "uninitialized constant" on error class?
     rescue SocketError, RuntimeError # Connection? Wrong URL?
       warn "Failed to open #{@options.url}!"
     end
 
-    # Save data to specified file.
+    # Formats a Word into URI query.
     #
-    # @param data [String] data file
-    # @param path [String] download directory
-    # @return [0,1] return value
-    def url_save(data, path)
-      File.open(path, "w") do |f|
-        # Files are small enough to be saved in one part
-        f.write(data) ? 0 : 1
+    # @param word [#to_a] selected word
+    # @return [String] the resulting URI query
+    def encode_word(word)
+      return unless word.respond_to?("to_a")
+
+      wlst = word.to_a.first(2)
+      return if wlst.empty?
+
+      # Only encode with kanji when necessary
+      if wlst[1].nil?
+        "?#{URI.encode_www_form([['kana', wlst[0]]])}"
+      else
+        "?#{URI.encode_www_form([['kana', wlst[0]], ['kanji', wlst[1]]])}"
       end
-    rescue Errno::ENOENT, Errno::EACCES, Errno::EISDIR, Errno::ENOSPC
-      warn "Failed to write to #{path}!"
     end
 
     # Checks and prints error if word is nil.
@@ -109,37 +117,10 @@ module Poddl
     # @param word [String] used in error printing
     # @return [Boolean] return value
     def check_data(data, word)
-      return true unless empty_file?(data)
+      return true unless
+          Digest::SHA256.hexdigest(data) == @options.url_hash
 
       !!(warn "Unable to find file: #{word}.mp3")
-    end
-
-    # Checks if the SHA256 of the input maches the {Poddl::Options::DEFAULT_SOURCE_HASH}.
-    # @note The file is considered empty if it contains an audio clip that says:
-    #   <em>"The audio for this clip is currently not available"</em>
-    #
-    # @param data [String] data file
-    # @return [Boolean] the result
-    def empty_file?(data)
-      !!(Digest::SHA256.hexdigest(data) == @options.url_hash)
-    end
-
-    # Formats a Word into URI query.
-    #
-    # @param word [#to_a] selected word
-    # @return [String] the resulting URI query
-    def encode_word(word)
-      return unless word.respond_to?("to_a")
-
-      wlst = word.to_a.first(2)
-      return if wlst.empty?
-
-      # Only encode with kanji when necessary
-      if wlst[1].nil?
-        "?#{URI.encode_www_form([['kana', wlst[0]]])}"
-      else
-        "?#{URI.encode_www_form([['kana', wlst[0]], ['kanji', wlst[1]]])}"
-      end
     end
   end
 end
