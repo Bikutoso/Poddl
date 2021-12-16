@@ -30,7 +30,7 @@ module Poddl
         self.url = ENV.key?("PODDL_URL") ? ENV["PODDL_URL"] : DEFAULT_SOURCE_URL
         self.url_hash = ENV.key?("PODDL_HASH") ? ENV["PODDL_HASH"] : DEFAULT_SOURCE_HASH
 
-        self.word = [nil]
+        self.word = [nil, nil]
       end
 
       # Defines all options
@@ -91,23 +91,16 @@ module Poddl
     # @return [Poddl::Options::ScriptOptions] finished options
     def parse(args)
       # Print help if empty arguments
-      args = ["-h"] if args.empty?
+      #args = ["-h"] if args.empty?
       @options = ScriptOptions.new
       @args = OptionParser.new do |parser|
         @options.define_options(parser)
         parser.parse!(args)
 
-        # No more arguments, print help
-        raise OptionParser::MissingArgument if args.empty?
-
         # This becomes the word we want to download
         @options.word = args.first(2)
-
-      # HACK: Only way i could think of not copying code
-      rescue OptionParser::MissingArgument
-        puts parser
-        exit
       end
+
       # Return options
       @options
     end

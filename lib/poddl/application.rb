@@ -10,12 +10,12 @@ module Poddl
   # == Handlers
   # - Implemented
   # - - {Poddl::Input::CLI}: Download a word from command line
-  # - Not implemented
   # - - {Poddl::Input::Interactive}: Downloads words as questions in the program
+  # - Not implemented
   # - - {Poddl::Input::File}: Downloads words from a file
   class Application
     # Initialize with options
-    # @param argv [argv} CLI arguments
+    # @param argv [argv] CLI arguments
     def initialize(argv)
       @options = Options.new.parse(argv)
       puts ENV["PODDL_URL"]
@@ -24,10 +24,15 @@ module Poddl
 
     # Starts the application
     #
-    # @return [0,1] return value
+    # @return [Boolean] return value
     def run
-      # NOTE: Currently only supports CLI input
-      app = Poddl::Input::CLI.new(@options)
+      # Run in interactive mode if no word is specified
+      if @options.word.none?
+        app = Poddl::Input::Interactive.new(@options)
+      else
+        app = Poddl::Input::CLI.new(@options)
+      end
+      
       app.run
     end
   end
