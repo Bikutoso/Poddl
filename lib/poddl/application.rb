@@ -2,6 +2,7 @@
 
 require_relative "input"
 require_relative "options"
+require_relative "logger"
 
 module Poddl
   # Slects and starts the apropriate handler based on arguments
@@ -18,7 +19,7 @@ module Poddl
     def initialize(argv)
       @options = Options.new.parse(argv)
       puts ENV["PODDL_URL"]
-      pp @options if $DEBUG
+      Poddl::Logger.debug @options
     end
 
     # Starts the application
