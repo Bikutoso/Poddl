@@ -23,20 +23,20 @@ module Poddl
       !(warn msg)
     end
 
+    # Prints verbose messages if $VERBOSE is true
+    #
+    # @param msg [String] Verbose Message to print
+    # @return [false]
+    def self.verbose(msg)
+      puts "#{DateTime.now}: #{msg}" if $VERBOSE
+    end
+
     # Prints debug messages if $DEBUG is true
     #
     # @param msg [String] Debug Message to print
-    # @return [0]
+    # @return [false]
     def self.debug(msg)
       puts "#{DateTime.now}: #{msg}" if $DEBUG
-    end
-
-    # Prints verbose messages if $VERBOSE is true
-    #
-    # @param msg [String] Debug Message to print
-    # @return [0]
-    def self.verbose(msg)
-      puts "#{DateTime.now}: #{msg}" if $VERBOSE
     end
   end
 end

@@ -39,7 +39,7 @@ module Poddl
       # @return [OptionParser] defined parser
       # @raise [OptionParser::MissingArgument] missing or incomplete arguments
       def define_options(parser)
-        parser.banner = "Usage: poddl [options] kana [kanji]"
+        parser.banner = "Usage: poddl [options] [kana] [kanji]"
         parser.separator ""
         parser.separator "Specific options:"
 
@@ -52,7 +52,8 @@ module Poddl
 
         # No argument show at tail. This will print an options summary.
         parser.on_tail("-h", "--help", "Show this message") do
-          raise OptionParser::MissingArgument
+          puts parser
+          exit
         end
 
         # Show version
@@ -91,7 +92,7 @@ module Poddl
     # @return [Poddl::Options::ScriptOptions] finished options
     def parse(args)
       # Print help if empty arguments
-      #args = ["-h"] if args.empty?
+      # args = ["-h"] if args.empty?
       @options = ScriptOptions.new
       @args = OptionParser.new do |parser|
         @options.define_options(parser)

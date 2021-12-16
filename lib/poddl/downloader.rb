@@ -44,7 +44,7 @@ module Poddl
     #
     # @param word [Poddl::Word] download word
     # @param path [String] download directory
-    # @return [0, 1] return value
+    # @return [Boolean] return value
     def download(word, path)
       return Poddl::Logger.error "#{path} is not a valid directory"\
              unless check_directory(path)

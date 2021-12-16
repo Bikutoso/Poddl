@@ -10,7 +10,7 @@ module Poddl
     # @param data [String] data file
     # @param word [String] file name
     # @param path [String] download directory
-    # @return [0,1] return value
+    # @return [Boolean] return value
     def self.save(data, word, path)
       # Expand path to avoid minor path errors like "/tmp//file.mp3"
       full_path = File.expand_path("#{word}.mp3", path)

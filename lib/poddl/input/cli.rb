@@ -16,7 +16,7 @@ module Poddl
       end
 
       # Calls {Poddl::Input::Handler#get} the word specified word.
-      # @return [0,1] reutrn value
+      # @return [Boolean] reutrn value
       # @see Poddl::Input::Handler#run
       def run
         word = Poddl::Word.new(@options.word)

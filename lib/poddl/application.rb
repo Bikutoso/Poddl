@@ -27,12 +27,12 @@ module Poddl
     # @return [Boolean] return value
     def run
       # Run in interactive mode if no word is specified
-      if @options.word.none?
-        app = Poddl::Input::Interactive.new(@options)
-      else
-        app = Poddl::Input::CLI.new(@options)
-      end
-      
+      app = if @options.word.none?
+              Poddl::Input::Interactive.new(@options)
+            else
+              Poddl::Input::CLI.new(@options)
+            end
+
       app.run
     end
   end

@@ -8,7 +8,7 @@ module Poddl
       # with the save path specified in the options
       #
       # @param word [Poddl::Word] word object
-      # @return [0,1] return value
+      # @return [Boolean] return value
       def get(word, poddl = Poddl::Downloader.new(@options))
         poddl.download(word, @options.save_path)
       end
