@@ -36,6 +36,8 @@ module Poddl
   #     poddl.download(word, "/tmp")
   #   end
   class Downloader
+    include Logging
+
     def initialize(options)
       @options = options
     end
@@ -46,14 +48,14 @@ module Poddl
     # @param path [String] download directory
     # @return [Boolean] return value
     def download(word, path)
-      return Poddl::Logger.error "#{path} is not a valid directory"\
+      return logger.fatal "#{path} is not a valid directory"\
              unless check_directory(path)
 
-      return Poddl::Logger.error "Not a valid word" if word.nil?
+      return logger.error "Not a valid word" if word.nil?
 
       data = url_open(@options.url, word)
 
-      return Poddl::Logger.error "Unable to find word: #{word}"\
+      return logger.error "Unable to find word: #{word}"\
              unless check_data(data)
 
       Filer.save(data, word, path)
@@ -68,12 +70,12 @@ module Poddl
     def url_open(url, word)
       full_url = url + encode_word(word)
 
-      Poddl::Logger.log "Downloading: #{word}.mp3"
+      logger.info "Downloading: #{word}.mp3"
 
       URI.parse(full_url).open.read
 
     rescue RuntimeError # Connection? Wrong URL?
-      Poddl::Logger.error "Failed to open #{@options.url}!"
+      logger.error "Failed to open #{@options.url}!"
     end
 
     # Formats a Word into URI query.

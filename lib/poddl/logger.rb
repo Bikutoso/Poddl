@@ -1,42 +1,32 @@
 # frozen_string_literal: true
 
-require "date"
+require "logger"
 
-module Poddl
-  # Defines various logging methods
-  module Logger
-    # Prints log messages
-    #
-    # @param msg [String] Message to print
-    # @return [false]
-    def self.log(msg)
-      msg = "#{DateTime.now}: #{msg}" if $VERBOSE
-      puts msg
+# Mixin module for logging
+module Logging
+  # @todo Figure out what this does
+  def logger
+    Logging.logger
+  end
+
+  # This initializes the logger and formats it based on options.
+  # @todo ditto
+  def self.logger
+    @logger ||= Logger.new($stdout)
+
+    # Set log level and format based on verbosity
+    if $VERBOSE || $DEBUG
+      @logger.level = $DEBUG ? :debug : :info
+      @logger.formatter = proc do |severity, datetime, _progname, msg|
+        "[#{severity}] #{datetime.strftime('%Y-%m-%d %H:%M:%S')}: #{msg}\n"
+      end
+    else
+      @logger.level = :warn
+      @logger.formatter = proc do |_severity, _datetime, _progname, msg|
+        "#{msg}\n"
+      end
     end
 
-    # Prints error messages
-    #
-    # @param msg [String, nil] Error to print
-    # @return [true] Returns true as it's an error
-    def self.error(msg = nil)
-      msg = "#{DateTime.now}: #{msg}" if $VERBOSE && !msg.nil?
-      !(warn msg)
-    end
-
-    # Prints verbose messages if $VERBOSE is true
-    #
-    # @param msg [String] Verbose Message to print
-    # @return [false]
-    def self.verbose(msg)
-      puts "#{DateTime.now}: #{msg}" if $VERBOSE
-    end
-
-    # Prints debug messages if $DEBUG is true
-    #
-    # @param msg [String] Debug Message to print
-    # @return [false]
-    def self.debug(msg)
-      puts "#{DateTime.now}: #{msg}" if $DEBUG
-    end
+    @logger
   end
 end

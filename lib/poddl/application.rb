@@ -14,12 +14,12 @@ module Poddl
   # - Not implemented
   # - - {Poddl::Input::File}: Downloads words from a file
   class Application
+    include Logging
+
     # Initialize with options
     # @param argv [argv] CLI arguments
     def initialize(argv)
       @options = Options.new.parse(argv)
-      puts ENV["PODDL_URL"]
-      Poddl::Logger.debug @options
     end
 
     # Starts the application
@@ -28,8 +28,10 @@ module Poddl
     def run
       # Run in interactive mode if no word is specified
       app = if @options.word.none?
+              logger.info "Using Interactive mode..."
               Poddl::Input::Interactive.new(@options)
             else
+              logger.info "Using CLI mode..."
               Poddl::Input::CLI.new(@options)
             end
 

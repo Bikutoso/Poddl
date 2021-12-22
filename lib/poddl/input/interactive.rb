@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require_relative "../word"
-require_relative "../logger"
 require_relative "common"
 
 module Poddl
@@ -22,7 +21,6 @@ module Poddl
       # @return [Boolean] return value
       # @see Poddl::Input::Handler#run
       def run
-        Poddl::Logger.verbose "Interactive mode"
         printf "Enter kana: "
         kana = gets.chomp
         printf "Enter kanji: \e[36;2;3mnil\b\b\b\e[0m" # FIXME: Back charachter to long
