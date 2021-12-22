@@ -48,14 +48,14 @@ module Poddl
     # @param path [String] download directory
     # @return [Boolean] return value
     def download(word, path)
-      return logger.fatal "#{path} is not a valid directory"\
+      exit logger.fatal "#{path} is not a valid directory" \
              unless check_directory(path)
 
-      return logger.error "Not a valid word" if word.nil?
+      return logger.warn "Not a valid word" if word.nil?
 
       data = url_open(@options.url, word)
 
-      return logger.error "Unable to find word: #{word}"\
+      return logger.warn "Unable to find word: #{word}" \
              unless check_data(data)
 
       Filer.save(data, word, path)
@@ -67,6 +67,7 @@ module Poddl
     #
     # @param url [String] url to open
     # @return [String] file data
+    # @raise [OpenURI::HTTPError, NoMethodError] if unable to connect to site
     def url_open(url, word)
       full_url = url + encode_word(word)
 
@@ -74,8 +75,8 @@ module Poddl
 
       URI.parse(full_url).open.read
 
-    rescue RuntimeError # Connection? Wrong URL?
-      logger.error "Failed to open #{@options.url}!"
+    rescue OpenURI::HTTPError, NoMethodError
+      logger.error "Failed to open url: #{@options.url}"
     end
 
     # Formats a Word into URI query.
@@ -108,8 +109,12 @@ module Poddl
     #
     # @param data [String] data to check
     # @return [Boolean] return value
+    # @raise [TypeError] if the digest is compared to wrong type
     def check_data(data)
       Digest::SHA256.hexdigest(data) != @options.url_hash
+
+    rescue TypeError
+      false
     end
   end
 end

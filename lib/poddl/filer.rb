@@ -11,8 +11,10 @@ module Poddl
     # @param word [String] file name
     # @param path [String] download directory
     # @return [Boolean] return value
+    # @raise [Errno::ENOENT, Errno::EACCES, Errno::EISDIR, Errno::ENOSPC]
+    #   if unable to save file
     def self.save(data, word, path)
-      # Extend iself with logging?
+      # Extend itself with logging?
       # Don't fully understand why this just can't use a simple include.
       extend Logging
 
@@ -26,7 +28,8 @@ module Poddl
         f.write(data) ? 0 : 1
       end
     rescue Errno::ENOENT, Errno::EACCES, Errno::EISDIR, Errno::ENOSPC
-      logger.fatal "Failed to write #{word}.mp3 to #{full_path}!"
+      # Exit to be safe, as it's likley it won't work other files too.
+      exit logger.fatal "Failed to write #{word}.mp3 to #{full_path}!"
     end
   end
 end

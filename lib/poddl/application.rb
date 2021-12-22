@@ -20,11 +20,15 @@ module Poddl
     # @param argv [argv] CLI arguments
     def initialize(argv)
       @options = Options.new.parse(argv)
+      logger.debug "Save Path: #{@options.save_path}"
+      logger.debug "URL: #{@options.url}"
+      logger.debug "HASH: #{@options.url_hash}"
     end
 
     # Starts the application
     #
     # @return [Boolean] return value
+    # @raise [Interrupt] if terminated by user
     def run
       # Run in interactive mode if no word is specified
       app = if @options.word.none?
@@ -36,6 +40,8 @@ module Poddl
             end
 
       app.run
+    rescue Interrupt
+      exit 0
     end
   end
 end
