@@ -21,7 +21,7 @@ module Poddl
       #   <em>"The audio for this clip is currently not available"</em>
       DEFAULT_SOURCE_HASH = "ae6398b5a27bc8c0a771df6c907ade794be15518174773c58c7c7ddd17098906"
 
-      attr_accessor :save_path, :url, :url_hash, :word
+      attr_accessor :save_path, :input_file, :url, :url_hash, :word
 
       # Default values
       def initialize
@@ -45,6 +45,7 @@ module Poddl
 
         # Additonal options
         string_save_options(parser)
+        string_input_file(parser)
         boolean_verbose_option(parser)
 
         parser.separator ""
@@ -70,6 +71,13 @@ module Poddl
         parser.on("-d", "--directory path", String,
                   "Path to download directory") do |path|
           self.save_path = path
+        end
+      end
+
+      def string_input_file(parser)
+        parser.on("-i", "--input file", String,
+                  "CSV file with words") do |path|
+          self.input_file = path
         end
       end
 
@@ -100,6 +108,10 @@ module Poddl
 
         # This becomes the word we want to download
         @options.word = args.first(2)
+      rescue OptionParser::MissingArgument, OptionParser::InvalidArgument
+        # HACK: This is a fucking stupid way to do it.
+        #   It dosn't allow me to handle excpetions during parsing.
+        parse(["-h"])
       end
 
       # Return options
