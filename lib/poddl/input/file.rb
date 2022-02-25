@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "common"
+require_relative "../parse_csv"
 
 module Poddl
   module Input
@@ -18,7 +19,7 @@ module Poddl
       # @return [Boolean] reutrn value
       # @see Poddl::Input::Handler#run
       def run
-        puts "Got #{@options.input_file}!"
+        words = ParseCSV.parse(@options.input_file)
         0
       end
     end
