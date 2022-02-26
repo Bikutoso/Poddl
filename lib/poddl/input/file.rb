@@ -20,6 +20,9 @@ module Poddl
       # @see Poddl::Input::Handler#run
       def run
         words = ParseCSV.parse(@options.input_file)
+        words.each do |word|
+          get(word)
+        end
         0
       end
     end

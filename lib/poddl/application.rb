@@ -11,8 +11,7 @@ module Poddl
   # - Implemented
   # - - {Poddl::Input::CLI}: Download a word from command line
   # - - {Poddl::Input::Interactive}: Downloads words as questions in the program
-  # - Not implemented
-  # - - {Poddl::Input::File}: Downloads words from a file
+  # - - {Poddl::Input::File}: Downloads words from CSV files
   class Application
     include Logging
 

@@ -13,9 +13,8 @@ module Poddl
 
       words = []
       CSV.read(path).each do |word|
-        logger.debug "Generating word: #{word}"
         words.append(Poddl::Word.new(word))
-        logger.debug "Got word: #{words[-1]}"
+        logger.debug "Generated word:#{word}, #{words[-1]}"
       end
       words
     end
