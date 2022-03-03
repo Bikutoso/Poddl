@@ -21,6 +21,7 @@ module Poddl
       @options = Options.new.parse(argv)
       logger.debug "Save Path: #{@options.save_path}"
       logger.debug "Input File: #{@options.input_file}"
+      logger.debug "Threads: #{@options.threads}"
       logger.debug "URL: #{@options.url}"
       logger.debug "HASH: #{@options.url_hash}"
     end

@@ -13,6 +13,9 @@ module Poddl
       # Default path for downloads
       DEFAULT_PATH = "#{Dir.home}/Downloads"
 
+      # Number of threads used in file mode
+      DEFAULT_THREADS = 2
+
       # Default URL for downloads
       DEFAULT_SOURCE_URL = "https://assets.languagepod101.com/dictionary/japanese/audiomp3.php"
 
@@ -21,12 +24,13 @@ module Poddl
       #   <em>"The audio for this clip is currently not available"</em>
       DEFAULT_SOURCE_HASH = "ae6398b5a27bc8c0a771df6c907ade794be15518174773c58c7c7ddd17098906"
 
-      attr_accessor :save_path, :input_file, :url, :url_hash, :word
+      attr_accessor :save_path, :input_file, :threads, :url, :url_hash, :word
 
       # Default values
       def initialize
         # These options can be set via ENV, if so use them.
         self.save_path = ENV.key?("PODDL_PATH") ? ENV["PODDL_PATH"] : DEFAULT_PATH
+        self.threads = ENV.key?("PODDL_THREADS") ? ENV["PODDL_THREADS"] : DEFAULT_THREADS
         self.url = ENV.key?("PODDL_URL") ? ENV["PODDL_URL"] : DEFAULT_SOURCE_URL
         self.url_hash = ENV.key?("PODDL_HASH") ? ENV["PODDL_HASH"] : DEFAULT_SOURCE_HASH
 
