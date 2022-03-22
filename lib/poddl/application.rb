@@ -19,11 +19,7 @@ module Poddl
     # @param argv [argv] CLI arguments
     def initialize(argv)
       @options = Options.new.parse(argv)
-      logger.debug "Save Path: #{@options.save_path}"
-      logger.debug "Input File: #{@options.input_file}"
-      logger.debug "Threads: #{@options.threads}"
-      logger.debug "URL: #{@options.url}"
-      logger.debug "HASH: #{@options.url_hash}"
+      debprint if $DEBUG
     end
 
     # Starts the application
@@ -46,6 +42,17 @@ module Poddl
       app.run
     rescue Interrupt
       exit 0
+    end
+
+    private
+
+    # Prints debug information
+    def debprint
+      logger.debug "Save Path: #{@options.save_path}"
+      logger.debug "Input File: #{@options.input_file}"
+      logger.debug "Threads: #{@options.threads}"
+      logger.debug "URL: #{@options.url}"
+      logger.debug "HASH: #{@options.url_hash}"
     end
   end
 end
