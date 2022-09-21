@@ -6,7 +6,7 @@ module Poddl
   # Creates options
   class Options
     # Current version of this application
-    VERSION = "1.1.0"
+    VERSION = "1.2.0-dev"
 
     # Defines Options
     class ScriptOptions
