@@ -3,37 +3,28 @@
 module Poddl
   # Defines a Japanese word.
   #
-  # @example A class that stores Words
-  #   require "poddl/word"
+  # @example An array of words
+  #  require "poddl/word"
   #
-  #   class Someclass
-  #     attr_accessor :words
+  #  input = [["えき","駅"], ["きく", "聞く"], ["パン"]]
   #
-  #     def initialize
-  #       @words = []
-  #     end
+  #  words = []
   #
-  #     def add_word(kana, kanji = nil)
-  #       @words.append(Poddl::Word.new(kana, kanji))
-  #     end
-  #   end
+  #  input.each do |word|
+  #    words.append(Poddl::Word.new(word))
+  #  end
   class Word
     # @return [String]
     attr_reader :kana, :kanji
 
     # Create new word from parameters
     #
-    # @param kana [String] hiragana or katakana
-    # @param kanji [String, nil] kanji and hiragana or nil
-    def initialize(kana, kanji = nil, *_)
-      reg_kana = /\A(?:\p{hiragana}|\p{katakana}|ー)+$\z/.freeze
-      reg_kanji = /\A(?:\p{han}|\p{hiragana})+$\z/.freeze
-
+    # @param word [Array<String, String>] kanji and hiragana
+    def initialize(word)
       # Assign variables only if kana and kanji is valid.
       #   Othervise assign both to nil
-      if valid?(kana, reg_kana) && (kanji.nil? || valid?(kanji, reg_kanji))
-        @kana = kana
-        @kanji = kanji
+      if valid?(*word)
+        @kana, @kanji = word
       else
         @kana, @kanji = nil
       end
@@ -47,14 +38,21 @@ module Poddl
     end
 
     # Formats Word into string.
-    # @note String is formated into a filename with the mp3 file extension.
-    #   E.g. <tt>駅_えき.mp3</tt>
+    # @note String is formated as kanji followed by kana.
+    #   E.g. <tt>駅_えき</tt>
     #
     # @return [String] the resulting string
     def to_s
       return if empty?
 
-      @kanji.nil? ? "#{@kana}.mp3" : "#{@kanji}_#{@kana}.mp3"
+      @kanji.nil? ? @kana.to_s : "#{@kanji}_#{@kana}"
+    end
+
+    # Formats Word into an array. Returns empty array in invalid word.
+    #
+    # @return [Array<String, String>, Array<>] a list contaning kana and kanji
+    def to_a
+      empty? ? [] : [@kana, @kanji]
     end
 
     # Is the instance nil?
@@ -62,12 +60,25 @@ module Poddl
 
     private
 
+    # Checks if it's a valid word
+    #
+    # @param kana [String] string of kana to check
+    # @param kanji [String, nil] string of kanji to check
+    # @return [Boolean] is it a valid word?
+    def valid?(kana, kanji = nil, *_)
+      reg_kana = /\A(\p{hiragana}|\p{katakana}|ー)+$\z/.freeze
+      reg_kanji = /\A(\p{han}|\p{hiragana})+$\z/.freeze
+
+      regex_match?(kana, reg_kana) &&
+        (kanji.nil? || regex_match?(kanji, reg_kanji))
+    end
+
     # Maches a string with a regex expression.
     #
     # @param string [String] string to compare
     # @param regex  [Regexp] regex to compare
     # @return [Boolean] the result of the match
-    def valid?(string, regex)
+    def regex_match?(string, regex)
       !!regex.match?(string)
     end
   end
