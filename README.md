@@ -17,7 +17,7 @@ In June of 2021 i decided to learn Ruby, and poddl was a perfect small first pro
 This project is not perfect, and will continue to develop as my knowlage about Ruby and programming in general improves
 ## How to install
 Build package with `gem build poddl.gemspec`  
-Then install with `gem install poddl-1.1.0.dev.gem` 
+Then install with `gem install poddl-1.1.0.gem` 
 
 
 ## Usage
