@@ -47,3 +47,4 @@ Poddl uses environment variables as a way to configure settings
 * `PODDL_URL`, Download URL, uses the query `?kanji=%s&kana=%s`
 * `PODDL_HASH` SHA-256 for missing file
 
+`Gender love, not hate`

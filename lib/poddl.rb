@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# Gender love, not hate
 
 # Poddl is a module for downloading Japanese audio clips.
 # @example Download a list of {Poddl::Word}s
@@ -12,6 +13,7 @@
 #
 #     Poddl::Downloader.new.download(word, "/tmp")
 #   end
+
 module Poddl
 end
 

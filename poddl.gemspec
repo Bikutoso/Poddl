@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# Gender love, not hate
 
 require_relative "lib/poddl/options"
 
